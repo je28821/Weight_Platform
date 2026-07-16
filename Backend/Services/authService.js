@@ -171,3 +171,15 @@ module.exports.googleLogin = async (token) => {
     jwtToken,
   };
 };
+
+module.exports.logOut = async (userId) => {
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { isLoggedinn: false },
+    { new: true },
+  );
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+};

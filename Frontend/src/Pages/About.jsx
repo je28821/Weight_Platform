@@ -153,31 +153,6 @@ export default function About() {
           </ul>
         </div>
       </section>
-
-      {/* CTA */}
-
-      <section className="py-24">
-        <div className="max-w-5xl mx-auto bg-[#111827] rounded-3xl px-8 py-16 text-center text-white">
-          <h2 className="text-4xl font-bold">
-            Start Your Health Journey Today
-          </h2>
-
-          <p className="mt-6 text-gray-300 max-w-2xl mx-auto leading-8">
-            Discover premium smart weight scales that combine precision,
-            durability, and elegant design to support your wellness goals.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-5 mt-10">
-            <button className="bg-[#C59D5F] hover:bg-[#B48C4E] text-black px-8 py-4 rounded-xl font-semibold transition">
-              Shop Now
-            </button>
-
-            <button className="border border-white hover:bg-white hover:text-black px-8 py-4 rounded-xl transition">
-              Book Appointment
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

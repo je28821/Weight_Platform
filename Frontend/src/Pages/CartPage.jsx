@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { getCartData } from "../Api/api";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   decareaseCartCount,
   fetchCart,
@@ -182,6 +181,7 @@ const CartPage = () => {
 
                 <Link to={"/"}>
                   <button
+                    onClick={() => window.scrollTo(0, 0)}
                     onClick={() => navigate("/products")}
                     className="mt-4 w-full rounded-xl border border-indigo-600 py-4 font-semibold text-indigo-600 transition hover:bg-indigo-50"
                   >

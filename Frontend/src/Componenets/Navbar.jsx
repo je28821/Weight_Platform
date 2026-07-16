@@ -9,14 +9,26 @@ import {
   FaChevronDown,
 } from "react-icons/fa";
 import logo from "../assets/Logo.png";
-import { Link, Links } from "react-router-dom";
+import { Link, Links, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { logout } from "../Api/api";
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [profileMenu, setProfileMenu] = useState(false);
 
   const cart = useSelector((state) => state.cart.carts);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    let res = await logout();
+    console.log(res);
+    if (res) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      navigate("/login");
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-[#FAF4ED] border-b border-gray-200 shadow-sm">
@@ -25,7 +37,11 @@ export default function Navbar() {
           {/* Desktop Menu */}
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link
+            to="/"
+            onClick={() => window.scrollTo(0, 0)}
+            className="flex items-center gap-2"
+          >
             <img src={logo} alt="logo" className="w-10 h-10 lg:w-12 lg:h-12" />
 
             <div>
@@ -41,6 +57,7 @@ export default function Navbar() {
             <li>
               <Link
                 to="/"
+                onClick={() => window.scrollTo(0, 0)}
                 className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
               >
                 Home
@@ -51,6 +68,7 @@ export default function Navbar() {
             <li>
               <Link
                 to="/about"
+                onClick={() => window.scrollTo(0, 0)}
                 className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
               >
                 About
@@ -61,6 +79,7 @@ export default function Navbar() {
             <li>
               <Link
                 to="/contact"
+                onClick={() => window.scrollTo(0, 0)}
                 className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
               >
                 Contact
@@ -71,22 +90,54 @@ export default function Navbar() {
 
           {/* Desktop Icons */}
           <div className="hidden lg:flex items-center gap-5">
-            <Link to="/cart" className="relative">
-              <FaShoppingCart className="text-xl" />
+            {/* Cart */}
+            <Link
+              to="/cart"
+              onClick={() => window.scrollTo(0, 0)}
+              className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+            >
+              <FaShoppingCart className="text-xl text-gray-700" />
 
-              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs">
+              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs font-medium">
                 {cart.length}
               </span>
             </Link>
 
-            <button>
-              <FaUserCircle className="text-3xl" />
+            {/* Profile */}
+            <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110">
+              <FaUserCircle className="text-3xl text-gray-700" />
+            </button>
+
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 hover:shadow-lg hover:scale-105 transition-all duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17 16l4-4m0 0l-4-4m4 4H9m4 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1"
+                />
+              </svg>
+              Logout
             </button>
           </div>
 
           {/* Mobile Right Side */}
           <div className="flex items-center gap-4 lg:hidden">
-            <Link to="/cart" className="relative">
+            <Link
+              to="/cart"
+              onClick={() => window.scrollTo(0, 0)}
+              className="relative"
+            >
               <FaShoppingCart className="text-2xl" />
 
               <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs">
@@ -111,6 +162,7 @@ export default function Navbar() {
           <div className="px-4 py-4 space-y-4">
             <Link
               to="/"
+              onClick={() => window.scrollTo(0, 0)}
               onClick={() => setMobileMenu(false)}
               className="block font-medium"
             >
@@ -119,6 +171,7 @@ export default function Navbar() {
 
             <Link
               to="/about"
+              onClick={() => window.scrollTo(0, 0)}
               onClick={() => setMobileMenu(false)}
               className="block font-medium"
             >
@@ -127,6 +180,7 @@ export default function Navbar() {
 
             <Link
               to="/contact"
+              onClick={() => window.scrollTo(0, 0)}
               onClick={() => setMobileMenu(false)}
               className="block font-medium"
             >

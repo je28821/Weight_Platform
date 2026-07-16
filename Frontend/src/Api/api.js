@@ -32,6 +32,11 @@ export const loginGoogle = async (data) => {
   return response.data;
 };
 
+export const logout = async () => {
+  const response = await api.delete(`/api/auth/logout`);
+  return response.data;
+};
+
 export const homedata = async (page, limit) => {
   const response = await api.get(`/api/products?page=${page}&limit=${limit}`);
   return response.data;

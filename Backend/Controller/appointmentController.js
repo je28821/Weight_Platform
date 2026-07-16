@@ -3,7 +3,6 @@ const appointmentService = require("../Services/appointmnetService");
 
 module.exports.addAppointmnet = async (req, res) => {
   try {
-    console.log(req.body);
     let data = req.body;
     let userId = req.user.id;
 

@@ -41,6 +41,24 @@ module.exports.getCart = async (req, res) => {
     });
   }
 };
+
+module.exports.getProduct = async (req, res) => {
+  try {
+    let { id } = req.params;
+    const result = await productService.getProduct(id);
+    return res.status(200).json({
+      success: true,
+      message: "Product Data Fetch successfully",
+      cart: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports.cartAdd = async (req, res) => {
   try {
     const { id } = req.params;

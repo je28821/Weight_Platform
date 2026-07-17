@@ -2,20 +2,15 @@ const express = require("express");
 const router = express.Router();
 const { isLoggedIn } = require("../Middalwares/authMiddalware");
 const {
-  homeController,
   cartAdd,
   getCart,
   cartRemove,
   increaseCount,
   decreaseCount,
   removecartItem,
-  getProduct,
 } = require("../Controller/productController");
 
-router.get("/", isLoggedIn, homeController);
-router.get("/:id", isLoggedIn, getProduct);
-
-router.get("/cart", isLoggedIn, getCart);
+router.get("/", isLoggedIn, getCart);
 router.post("/add/:id", isLoggedIn, cartAdd);
 router.patch("/reduce/:id", isLoggedIn, decreaseCount);
 router.patch("/increase/:id", isLoggedIn, increaseCount);

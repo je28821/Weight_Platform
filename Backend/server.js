@@ -10,6 +10,7 @@ const compression = require("compression");
 const authRoutes = require("./Routes/authRoutes");
 const productRoutes = require("./Routes/productsRoutes");
 const appointmentRoutes = require("./Routes/appointmentRoutes");
+const cartRoutes = require("./Routes/cartRoutes");
 
 // Connect to Database
 connectDB();
@@ -29,6 +30,7 @@ app.use(compression());
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 app.use("/api/appointment", appointmentRoutes);
 
 app.listen(port, () => {

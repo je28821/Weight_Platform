@@ -5,6 +5,7 @@ import Hero from "../assets/Hero.png";
 import { useRef } from "react";
 import { appointmentSchema } from "../Validator/appointment";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 const Home = ({ className }) => {
   const [page, setpage] = useState(1);
@@ -109,7 +110,7 @@ const Home = ({ className }) => {
 
     setErrors({});
     let res = await addAppointment(result);
-    console.log(res);
+    toast.success("Appointment Sent Succesfully !!");
   };
 
   useEffect(() => {
@@ -118,7 +119,7 @@ const Home = ({ className }) => {
         const data = await homedata(page, limit);
         setProducts(data.data);
       } catch (error) {
-        console.log(error);
+        toast.error(error.message || "Something went wrong");
       }
     };
 

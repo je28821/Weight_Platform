@@ -13,6 +13,10 @@ module.exports.getCart = async (userId) => {
   const user = await User.findById(userId).populate("cartItems.product");
   return user.cartItems;
 };
+module.exports.getProduct = async (id) => {
+  const product = await Product.findById(id);
+  return product;
+};
 
 module.exports.addToCart = async (productId, userId) => {
   const product = await Product.findById(productId);
@@ -51,31 +55,35 @@ module.exports.addToCart = async (productId, userId) => {
 };
 
 module.exports.countDCart = async (productId, userId) => {
-  const user = await User.findById(userId).populate("cartItems.product");
+  try {
+    const user = await User.findById(userId).populate("cartItems.product");
 
-  if (!user) {
-    throw new Error("User not found");
-  }
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-  const existingItem = user.cartItems.find(
-    (item) => item.product._id.toString() === productId,
-  );
-
-  if (!existingItem) {
-    throw new Error("Product not found in cart");
-  }
-
-  if (existingItem.quantity === 1) {
-    user.cartItems = user.cartItems.filter(
-      (item) => item.product._id.toString() !== productId,
+    const existingItem = user.cartItems.find(
+      (item) => item.product._id.toString() === productId,
     );
-  } else {
-    existingItem.quantity -= 1;
+
+    if (!existingItem) {
+      throw new Error("Product not found in cart");
+    }
+
+    if (existingItem.quantity === 1) {
+      user.cartItems = user.cartItems.filter(
+        (item) => item.product._id.toString() !== productId,
+      );
+    } else {
+      existingItem.quantity -= 1;
+    }
+
+    await user.save();
+
+    return user;
+  } catch (error) {
+    console.log(error);
   }
-
-  await user.save();
-
-  return user;
 };
 
 module.exports.countICart = async (productId, userId) => {

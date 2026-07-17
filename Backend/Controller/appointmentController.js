@@ -1,4 +1,3 @@
-const Appointment = require("../Model/appointment");
 const appointmentService = require("../Services/appointmnetService");
 
 module.exports.addAppointmnet = async (req, res) => {
@@ -7,6 +6,7 @@ module.exports.addAppointmnet = async (req, res) => {
     let userId = req.user.id;
 
     const result = await appointmentService.addAppointment(userId, data);
+
     return res.status(201).json({
       success: true,
       message: "Appoint Request Sent successfully",

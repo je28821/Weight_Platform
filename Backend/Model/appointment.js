@@ -10,7 +10,7 @@ const appointmentSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["Home Repair", "Service Center", "Consultation", "Demo"],
+      enum: ["Home Repair", "Service Center", "Consultation", "Product Demo"],
       required: true,
     },
 

@@ -42,28 +42,33 @@ export const homedata = async (page, limit) => {
   return response.data;
 };
 
+export const getProduct = async (id) => {
+  const response = await api.get(`/api/products/${id}`);
+  return response.data;
+};
+
 export const getCartData = async () => {
-  const response = await api.get(`/api/products/cart`);
+  const response = await api.get(`/api/cart`);
   return response.data;
 };
 
 export const addtoCart = async (id) => {
-  const response = await api.post(`/api/products/add/${id}`);
+  const response = await api.post(`/api/cart/add/${id}`);
   return response.data;
 };
 
 export const countDCart = async (id) => {
-  const response = await api.patch(`/api/products/reduce/${id}`);
+  const response = await api.patch(`/api/cart/reduce/${id}`);
   return response.data;
 };
 
 export const countICart = async (id) => {
-  const response = await api.patch(`/api/products/increase/${id}`);
+  const response = await api.patch(`/api/cart/increase/${id}`);
   return response.data;
 };
 
 export const cartRemove = async (id) => {
-  const response = await api.delete(`/api/products/remove/${id}`);
+  const response = await api.delete(`/api/cart/remove/${id}`);
   return response.data;
 };
 

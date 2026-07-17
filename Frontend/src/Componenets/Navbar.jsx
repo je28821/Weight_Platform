@@ -22,7 +22,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     let res = await logout();
-    console.log(res);
+
     if (res) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
@@ -86,6 +86,28 @@ export default function Navbar() {
                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </li>
+
+            <li>
+              <Link
+                to="/dashboard"
+                onClick={() => window.scrollTo(0, 0)}
+                className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
+              >
+                Dashboard
+                <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/appointment"
+                onClick={() => window.scrollTo(0, 0)}
+                className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
+              >
+                Appointments
+                <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            </li>
           </ul>
 
           {/* Desktop Icons */}
@@ -104,9 +126,15 @@ export default function Navbar() {
             </Link>
 
             {/* Profile */}
-            <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110">
-              <FaUserCircle className="text-3xl text-gray-700" />
-            </button>
+            <Link
+              to="/activity"
+              onClick={() => window.scrollTo(0, 0)}
+              className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+            >
+              <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110">
+                <FaUserCircle className="text-3xl text-gray-700" />
+              </button>
+            </Link>
 
             {/* Logout */}
             <button
@@ -162,7 +190,6 @@ export default function Navbar() {
           <div className="px-4 py-4 space-y-4">
             <Link
               to="/"
-              onClick={() => window.scrollTo(0, 0)}
               onClick={() => setMobileMenu(false)}
               className="block font-medium"
             >
@@ -171,7 +198,6 @@ export default function Navbar() {
 
             <Link
               to="/about"
-              onClick={() => window.scrollTo(0, 0)}
               onClick={() => setMobileMenu(false)}
               className="block font-medium"
             >
@@ -180,7 +206,6 @@ export default function Navbar() {
 
             <Link
               to="/contact"
-              onClick={() => window.scrollTo(0, 0)}
               onClick={() => setMobileMenu(false)}
               className="block font-medium"
             >

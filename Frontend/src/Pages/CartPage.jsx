@@ -47,7 +47,7 @@ const CartPage = () => {
                   </p>
 
                   <button
-                    onClick={() => navigate("/products")}
+                    onClick={() => navigate("/")}
                     className="mt-8 rounded-xl bg-indigo-600 px-8 py-3 font-semibold text-white transition hover:bg-indigo-700"
                   >
                     Continue Shopping
@@ -59,76 +59,77 @@ const CartPage = () => {
                     key={item.product._id}
                     className="rounded-3xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
                   >
-                    <div className="flex flex-col gap-6 md:flex-row">
-                      {/* Image */}
-                      <div className="flex justify-center md:block">
-                        <img
-                          src={item.product.image}
-                          alt={item.product.name}
-                          className="h-44 w-44 rounded-2xl object-cover"
-                        />
-                      </div>
+                    <div className="flex flex-col md:flex-row gap-6">
+                      {/* ---------- Clickable Area ---------- */}
+                      <div
+                        onClick={() => navigate(`/product/${item.product._id}`)}
+                        className="flex flex-1 cursor-pointer gap-6"
+                      >
+                        {/* Image */}
+                        <div className="flex justify-center">
+                          <img
+                            src={item.product.image}
+                            alt={item.product.name}
+                            className="h-44 w-44 rounded-2xl object-cover"
+                          />
+                        </div>
 
-                      {/* Details */}
-                      <div className="flex flex-1 flex-col justify-between">
-                        <div>
+                        {/* Product Details */}
+                        <div className="flex flex-col justify-center">
                           <h2 className="text-2xl font-bold text-gray-900">
                             {item.product.name}
                           </h2>
 
-                          <p className="mt-2 inline-block rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700">
-                            {item.product.catagory}
+                          <p className="mt-2 inline-block w-fit rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700">
+                            {item.product.category}
                           </p>
 
                           <p className="mt-5 text-3xl font-bold text-indigo-600">
                             ₹{item.product.price}
                           </p>
                         </div>
+                      </div>
 
-                        <div className="mt-6 flex flex-wrap items-center justify-between gap-5">
-                          {/* Quantity */}
+                      {/* ---------- Cart Controls ---------- */}
+                      <div className="flex flex-col justify-between items-end">
+                        {/* Quantity */}
+                        <div>
+                          <p className="mb-2 text-sm text-gray-500">
+                            Quantity : {item.quantity}
+                          </p>
 
-                          <div>
-                            <p className="mb-2 text-sm text-gray-500">
-                              Quantity : {item.quantity}
-                            </p>
+                          <div className="flex items-center rounded-xl border">
+                            <button
+                              onClick={() =>
+                                dispatch(decareaseCartCount(item.product._id))
+                              }
+                              className="px-4 py-2 text-xl hover:bg-gray-100"
+                            >
+                              -
+                            </button>
 
-                            <div className="flex items-center rounded-xl border">
-                              <button
-                                className="px-4 py-2 text-xl hover:bg-gray-100"
-                                onClick={() =>
-                                  dispatch(decareaseCartCount(item.product._id))
-                                }
-                              >
-                                -
-                              </button>
+                            <span className="px-5 font-semibold">
+                              {item.quantity}
+                            </span>
 
-                              <span className="px-5 font-semibold">
-                                {item.quantity}
-                              </span>
-
-                              <button
-                                className="px-4 py-2 text-xl hover:bg-gray-100"
-                                onClick={() =>
-                                  dispatch(increaseCartCount(item.product._id))
-                                }
-                              >
-                                +
-                              </button>
-                            </div>
+                            <button
+                              onClick={() =>
+                                dispatch(increaseCartCount(item.product._id))
+                              }
+                              className="px-4 py-2 text-xl hover:bg-gray-100"
+                            >
+                              +
+                            </button>
                           </div>
-
-                          {/* Remove */}
-
-                          <button
-                            onClick={() =>
-                              dispatch(removecart(item.product._id))
-                            }
-                            className="rounded-xl bg-red-500 px-6 py-3 font-semibold text-white transition hover:bg-red-600"
-                          >
-                            Remove
-                          </button>
                         </div>
+
+                        {/* Remove */}
+                        <button
+                          onClick={() => dispatch(removecart(item.product._id))}
+                          className="mt-6 rounded-xl bg-red-500 px-6 py-3 font-semibold text-white transition hover:bg-red-600"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   </div>

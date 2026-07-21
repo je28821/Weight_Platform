@@ -71,42 +71,50 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-800">
       {/* LEFT SIDE */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center text-white px-8 xl:px-20">
-        <h1 className="text-4xl xl:text-6xl font-bold mb-6">
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center px-8 xl:px-20 text-white">
+        <h1 className="text-5xl xl:text-6xl font-bold mb-6 text-center">
           Join Us Today ✨
         </h1>
 
-        <p className="text-base md:text-lg xl:text-xl text-blue-100 leading-9">
+        <p className="max-w-lg text-lg xl:text-xl text-blue-100 leading-8 text-center">
           Create your account to unlock a secure and personalized experience.
-          Manage your profile, track your activity, and access all features
-          through a fast, modern, and reliable platform.
+          Manage appointments, orders, and your profile from one place.
         </p>
 
         <img
           src="https://illustrations.popsy.co/white/web-design.svg"
-          className="w-72 md:w-96 xl:w-[450px] mt-12 animate-bounce"
+          alt=""
+          className="w-80 xl:w-[450px] mt-12 animate-bounce"
         />
       </div>
 
       {/* RIGHT SIDE */}
 
-      <div className="flex justify-center items-center w-full lg:w-1/2 px-4 py-8 sm:px-6 md:px-10">
-        <div className="w-full max-w-md sm:max-w-lg bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 shadow-2xl">
+      <div className="flex flex-1 justify-center items-center px-4 py-8 sm:px-6">
+        <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-6 sm:p-8">
+          {/* Mobile Illustration */}
+
+          <div className="lg:hidden flex justify-center mb-5">
+            <img
+              src="https://illustrations.popsy.co/white/web-design.svg"
+              className="w-28 animate-bounce"
+              alt=""
+            />
+          </div>
+
           <h1 className="text-3xl sm:text-4xl font-bold text-center text-white">
             Register
           </h1>
 
-          <p className="text-center text-gray-200 mt-2 mb-8">
+          <p className="text-center text-blue-100 mt-2 mb-8">
             Create your account
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name */}
-
             <div className="relative">
-              <FaUser className="absolute left-4 top-4 text-gray-300" />
+              <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" />
 
               <input
                 type="text"
@@ -114,11 +122,18 @@ export default function Register() {
                 placeholder="Full Name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full rounded-xl py-3 sm:py-4 pl-12 pr-4 text-sm sm:text-base bg-white/20 text-white placeholder-gray-300 outline-none border transition-all duration-300 ${
-                  errors.name
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-transparent focus:border-cyan-400"
-                }`}
+                className={`w-full rounded-xl
+                  bg-white/20
+                  text-white
+                  placeholder-gray-300
+                  py-3
+                  pl-12
+                  pr-4
+                  text-sm sm:text-base
+                  outline-none
+                  border
+                  transition
+                  ${errors.name ? "border-red-500" : "border-transparent focus:border-cyan-400"}`}
               />
 
               {errors.name && (
@@ -139,11 +154,18 @@ export default function Register() {
                 placeholder="Email Address"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full rounded-xl py-3 sm:py-4 pl-12 pr-4 text-sm sm:text-base bg-white/20 text-white placeholder-gray-300 outline-none border transition-all duration-300 ${
-                  errors.name
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-transparent focus:border-cyan-400"
-                }`}
+                className={`w-full rounded-xl
+                  bg-white/20
+                  text-white
+                  placeholder-gray-300
+                  py-3
+                  pl-12
+                  pr-4
+                  text-sm sm:text-base
+                  outline-none
+                  border
+                  transition
+                  ${errors.name ? "border-red-500" : "border-transparent focus:border-cyan-400"}`}
               />
               {errors.email && (
                 <p className="mt-2 ml-2 text-sm text-red-400">
@@ -163,11 +185,18 @@ export default function Register() {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full rounded-xl py-3 sm:py-4 pl-12 pr-4 text-sm sm:text-base bg-white/20 text-white placeholder-gray-300 outline-none border transition-all duration-300 ${
-                  errors.name
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-transparent focus:border-cyan-400"
-                }`}
+                className={`w-full rounded-xl
+                  bg-white/20
+                  text-white
+                  placeholder-gray-300
+                  py-3
+                  pl-12
+                  pr-4
+                  text-sm sm:text-base
+                  outline-none
+                  border
+                  transition
+                  ${errors.name ? "border-red-500" : "border-transparent focus:border-cyan-400"}`}
               />
               {errors.password && (
                 <p className="mt-2 ml-2 text-sm text-red-400">
@@ -187,11 +216,18 @@ export default function Register() {
                 placeholder="Contact Number"
                 value={formData.contactNo}
                 onChange={handleChange}
-                className={`w-full rounded-xl py-3 sm:py-4 pl-12 pr-4 text-sm sm:text-base bg-white/20 text-white placeholder-gray-300 outline-none border transition-all duration-300 ${
-                  errors.name
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-transparent focus:border-cyan-400"
-                }`}
+                className={`w-full rounded-xl
+                  bg-white/20
+                  text-white
+                  placeholder-gray-300
+                  py-3
+                  pl-12
+                  pr-4
+                  text-sm sm:text-base
+                  outline-none
+                  border
+                  transition
+                  ${errors.name ? "border-red-500" : "border-transparent focus:border-cyan-400"}`}
               />
               {errors.contactNo && (
                 <p className="mt-2 ml-2 text-sm text-red-400">
@@ -211,11 +247,18 @@ export default function Register() {
                 placeholder="Address"
                 value={formData.address[0].address}
                 onChange={handleChange}
-                className={`w-full rounded-xl py-3 sm:py-4 pl-12 pr-4 text-sm sm:text-base bg-white/20 text-white placeholder-gray-300 outline-none border transition-all duration-300 ${
-                  errors.name
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-transparent focus:border-cyan-400"
-                }`}
+                className={`w-full rounded-xl
+                  bg-white/20
+                  text-white
+                  placeholder-gray-300
+                  py-3
+                  pl-12
+                  pr-4
+                  text-sm sm:text-base
+                  outline-none
+                  border
+                  transition
+                  ${errors.name ? "border-red-500" : "border-transparent focus:border-cyan-400"}`}
               />
             </div>
 
@@ -231,11 +274,18 @@ export default function Register() {
                   placeholder="Village"
                   value={formData.address[0].village}
                   onChange={handleChange}
-                  className={`w-full rounded-xl py-3 sm:py-4 pl-12 pr-4 text-sm sm:text-base bg-white/20 text-white placeholder-gray-300 outline-none border transition-all duration-300 ${
-                    errors.name
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-transparent focus:border-cyan-400"
-                  }`}
+                  className={`w-full rounded-xl
+                  bg-white/20
+                  text-white
+                  placeholder-gray-300
+                  py-3
+                  pl-12
+                  pr-4
+                  text-sm sm:text-base
+                  outline-none
+                  border
+                  transition
+                  ${errors.name ? "border-red-500" : "border-transparent focus:border-cyan-400"}`}
                 />
               </div>
 
@@ -248,11 +298,18 @@ export default function Register() {
                   placeholder="City"
                   value={formData.address[0].city}
                   onChange={handleChange}
-                  className={`w-full rounded-xl py-3 sm:py-4 pl-12 pr-4 text-sm sm:text-base bg-white/20 text-white placeholder-gray-300 outline-none border transition-all duration-300 ${
-                    errors.name
-                      ? "border-red-500 focus:border-red-500"
-                      : "border-transparent focus:border-cyan-400"
-                  }`}
+                  className={`w-full rounded-xl
+                    bg-white/20
+                    text-white
+                    placeholder-gray-300
+                    py-3
+                    pl-12
+                    pr-4
+                    text-sm sm:text-base
+                    outline-none
+                    border
+                    transition
+                    ${errors.name ? "border-red-500" : "border-transparent focus:border-cyan-400"}`}
                 />
               </div>
             </div>
@@ -264,9 +321,12 @@ export default function Register() {
             </button>
           </form>
 
-          <p className="text-center text-gray-300 mt-8">
+          <p className="text-center text-gray-300 mt-8 text-sm sm:text-base">
             Already have an account?
-            <span className="text-cyan-300 cursor-pointer hover:text-white ml-2 font-semibold">
+            <span
+              onClick={() => navigate("/login")}
+              className="ml-2 text-cyan-300 hover:text-white cursor-pointer font-semibold"
+            >
               Login
             </span>
           </p>

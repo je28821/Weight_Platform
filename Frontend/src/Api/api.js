@@ -76,3 +76,33 @@ export const addAppointment = async (data) => {
   const response = await api.post(`/api/appointment`, data);
   return response.data;
 };
+
+export const getappontments = async () => {
+  const response = await api.get(`/api/appointment`);
+  return response.data;
+};
+
+export const adminappontments = async () => {
+  const response = await api.get(`/api/appointment/admin`);
+  return response.data;
+};
+
+export const handleConfirmss = async (id) => {
+  const response = await api.post(`/api/appointment/confirm`, { id });
+  return response.data;
+};
+
+export const handleIgnors = async (id) => {
+  const response = await api.post(`/api/appointment/ignore`, { id });
+  return response.data;
+};
+
+export const getDashboardData = async () => {
+  const response = await api.get("/api/admin");
+  return response.data;
+};
+
+export const deleteProduct = async (id) => {
+  const response = await api.delete(`/api/products/${id}`);
+  return response.data;
+};

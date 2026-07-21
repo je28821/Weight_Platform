@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { addAppointment, homedata } from "../Api/api";
 import ProductCard from "../Componenets/Card";
 import Hero from "../assets/Hero.png";
@@ -394,7 +394,7 @@ const Home = ({ className }) => {
 
               <div>
                 <label className="block text-lg font-semibold text-gray-800 mb-5">
-                  Select Appointment Type
+                  Select One Type From 4
                 </label>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -489,27 +489,27 @@ const Home = ({ className }) => {
                       value={formData.time}
                       onChange={handleChange}
                       className="
-      w-full
-      appearance-none
-      rounded-xl
-      border
-      border-gray-300
-      bg-white
-      px-5
-      py-4
-      pr-12
-      text-gray-700
-      transition-all
-      duration-300
-      cursor-pointer
-      shadow-sm
-      hover:border-[#C59D5F]
-      hover:shadow-md
-      focus:outline-none
-      focus:ring-4
-      focus:ring-[#D4B483]/30
-      focus:border-[#C59D5F]
-    "
+                        w-full
+                        appearance-none
+                        rounded-xl
+                        border
+                        border-gray-300
+                        bg-white
+                        px-5
+                        py-4
+                        pr-12
+                        text-gray-700
+                        transition-all
+                        duration-300
+                        cursor-pointer
+                        shadow-sm
+                        hover:border-[#C59D5F]
+                        hover:shadow-md
+                        focus:outline-none
+                        focus:ring-4
+                        focus:ring-[#D4B483]/30
+                        focus:border-[#C59D5F]
+                      "
                     >
                       <option value="">Select Time</option>
 

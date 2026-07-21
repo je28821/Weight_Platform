@@ -7,17 +7,23 @@ import {
   FaTimes,
   FaSearch,
   FaChevronDown,
+  FaHome,
+  FaBoxOpen,
+  FaBell,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import logo from "../assets/Logo.png";
 import { Link, Links, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../Api/api";
+import { clearCart } from "../Redux/Features/cart/cartSlice";
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [profileMenu, setProfileMenu] = useState(false);
 
   const cart = useSelector((state) => state.cart.carts);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -26,6 +32,7 @@ export default function Navbar() {
     if (res) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
+      dispatch(clearCart());
       navigate("/login");
     }
   };
@@ -39,15 +46,21 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            onClick={() => window.scrollTo(0, 0)}
-            className="flex items-center gap-2"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="flex items-center gap-2 flex-shrink-0"
           >
-            <img src={logo} alt="logo" className="w-10 h-10 lg:w-12 lg:h-12" />
+            <img
+              src={logo}
+              alt="Weight Scale Logo"
+              className="w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 object-contain"
+            />
 
-            <div>
-              <h1 className="text-lg lg:text-2xl font-bold">Weight Scale</h1>
+            <div className="leading-tight">
+              <h1 className="text-base sm:text-lg lg:text-2xl font-bold text-gray-800 whitespace-nowrap">
+                Weight Scale
+              </h1>
 
-              <p className="hidden lg:block text-xs text-gray-500">
+              <p className="hidden md:block text-xs text-gray-500">
                 Digital Platform
               </p>
             </div>
@@ -112,6 +125,20 @@ export default function Navbar() {
 
           {/* Desktop Icons */}
           <div className="hidden lg:flex items-center gap-5">
+            {/* Notification */}
+            <Link
+              to="/notifications"
+              onClick={() => window.scrollTo(0, 0)}
+              className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+            >
+              <FaBell className="text-xl text-gray-700" />
+
+              {/* Notification Count */}
+              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs font-medium">
+                3
+              </span>
+            </Link>
+
             {/* Cart */}
             <Link
               to="/cart"
@@ -159,69 +186,74 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Mobile Right Side */}
-          <div className="flex items-center gap-4 lg:hidden">
+          <div className="lg:hidden flex items-center justify-between w-full bg-[#FAF4ED] px-4 py-3">
+            {/* Left - Logo */}
             <Link
-              to="/cart"
-              onClick={() => window.scrollTo(0, 0)}
-              className="relative"
-            >
-              <FaShoppingCart className="text-2xl" />
+              to="/"
+              className="flex items-center gap-2 flex-shrink-0"
+            ></Link>
 
-              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs">
-                {cart.length}
-              </span>
-            </Link>
+            {/* Center Navigation */}
+            <div className="flex items-center gap-7">
+              <Link
+                to="/"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                <FaHome className="text-2xl" />
+              </Link>
 
-            <button onClick={() => setMobileMenu(!mobileMenu)}>
-              {mobileMenu ? (
-                <FaTimes className="text-2xl" />
-              ) : (
-                <FaBars className="text-2xl" />
-              )}
-            </button>
+              <Link
+                to="/products"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                <FaBoxOpen className="text-2xl" />
+              </Link>
+
+              <Link
+                to="/cart"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="relative text-gray-700 hover:text-blue-600 transition"
+              >
+                <FaShoppingCart className="text-2xl" />
+
+                <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-black text-white text-[10px] flex items-center justify-center">
+                  {cart.length}
+                </span>
+              </Link>
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-4">
+              <Link
+                to="/notifications"
+                className="relative text-gray-700 hover:text-blue-600 transition"
+              >
+                <FaBell className="text-2xl" />
+
+                <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center">
+                  3
+                </span>
+              </Link>
+
+              <Link
+                to="/activity"
+                className="text-gray-700 hover:text-blue-600 transition"
+              >
+                <FaUserCircle className="text-2xl" />
+              </Link>
+
+              <button
+                onClick={handleLogout}
+                className="text-red-500 hover:text-red-600 transition"
+              >
+                <FaSignOutAlt className="text-2xl" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {mobileMenu && (
-        <div className="lg:hidden bg-white border-t shadow-lg">
-          <div className="px-4 py-4 space-y-4">
-            <Link
-              to="/"
-              onClick={() => setMobileMenu(false)}
-              className="block font-medium"
-            >
-              Home
-            </Link>
-
-            <Link
-              to="/about"
-              onClick={() => setMobileMenu(false)}
-              className="block font-medium"
-            >
-              About
-            </Link>
-
-            <Link
-              to="/contact"
-              onClick={() => setMobileMenu(false)}
-              className="block font-medium"
-            >
-              Contact
-            </Link>
-
-            <button
-              className="flex items-center gap-3"
-              onClick={() => setMobileMenu(false)}
-            >
-              <FaUserCircle className="text-2xl" />
-              Profile
-            </button>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }

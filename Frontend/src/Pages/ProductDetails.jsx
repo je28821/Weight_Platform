@@ -64,7 +64,7 @@ const ProductDetails = () => {
             className="mt-10 group inline-flex items-center gap-2 px-8 py-3.5 bg-gray-900 text-white font-medium rounded-full hover:bg-gray-800 hover:shadow-xl hover:shadow-gray-900/10 hover:-translate-y-0.5 transition-all duration-200"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
-            Back to Catalog
+            Back to home
           </button>
         </div>
       </div>

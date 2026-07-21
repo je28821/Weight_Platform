@@ -146,7 +146,7 @@ module.exports.googleLogin = async (token) => {
     },
     process.env.JWT_SCREAT,
     {
-      expiresIn: "1d",
+      expiresIn: "60d",
     },
   );
 

@@ -25,23 +25,6 @@ module.exports.homeController = async (req, res) => {
   }
 };
 
-module.exports.getCart = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const result = await productService.getCart(userId);
-    return res.status(200).json({
-      success: true,
-      message: "Cart Data Fetch successfully",
-      cart: result,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
 module.exports.getProduct = async (req, res) => {
   try {
     let { id } = req.params;
@@ -59,101 +42,14 @@ module.exports.getProduct = async (req, res) => {
   }
 };
 
-module.exports.cartAdd = async (req, res) => {
+module.exports.deleteProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Product id is required",
-      });
-    }
-    const userId = req.user.id;
-
-    const result = await productService.addToCart(id, userId);
+    let { id } = req.params;
+    const result = await productService.deleteProduct(id);
     return res.status(200).json({
       success: true,
-      message: "Product Added successfully",
-      cart: result.cartItems,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-module.exports.decreaseCount = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Product id is required",
-      });
-    }
-    const userId = req.user.id;
-
-    const result = await productService.countDCart(id, userId);
-    return res.status(200).json({
-      success: true,
-      message: "Cart Count Decreased successfully",
-      cart: result.cartItems,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-module.exports.increaseCount = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Product id is required",
-      });
-    }
-    const userId = req.user.id;
-
-    const result = await productService.countICart(id, userId);
-    return res.status(200).json({
-      success: true,
-      message: "Cart Count Increased successfully",
-      cart: result.cartItems,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-module.exports.removecartItem = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Product id is required",
-      });
-    }
-    const userId = req.user.id;
-
-    const result = await productService.removeItemCart(id, userId);
-    return res.status(200).json({
-      success: true,
-      message: "Cart Item Remove successfully",
-      cart: result.cartItems,
+      message: "Product Deleted successfully",
+      cart: result,
     });
   } catch (error) {
     return res.status(400).json({

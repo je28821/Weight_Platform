@@ -14,6 +14,11 @@ const CartPage = () => {
 
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.carts);
+  console.log(cart);
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
 
   const total = cart.reduce((sum, item) => {
     return sum + item.product.price * item.quantity;

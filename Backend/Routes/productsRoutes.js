@@ -3,22 +3,13 @@ const router = express.Router();
 const { isLoggedIn } = require("../Middalwares/authMiddalware");
 const {
   homeController,
-  cartAdd,
-  getCart,
-  cartRemove,
-  increaseCount,
-  decreaseCount,
-  removecartItem,
   getProduct,
+  deleteProduct,
 } = require("../Controller/productController");
 
 router.get("/", isLoggedIn, homeController);
 router.get("/:id", isLoggedIn, getProduct);
 
-router.get("/cart", isLoggedIn, getCart);
-router.post("/add/:id", isLoggedIn, cartAdd);
-router.patch("/reduce/:id", isLoggedIn, decreaseCount);
-router.patch("/increase/:id", isLoggedIn, increaseCount);
-router.delete("/remove/:id", isLoggedIn, removecartItem);
+router.delete("/:id", isLoggedIn, deleteProduct);
 
 module.exports = router;

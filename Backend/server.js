@@ -11,6 +11,7 @@ const authRoutes = require("./Routes/authRoutes");
 const productRoutes = require("./Routes/productsRoutes");
 const appointmentRoutes = require("./Routes/appointmentRoutes");
 const cartRoutes = require("./Routes/cartRoutes");
+const adminRoutes = require("./Routes/adminRoutes");
 
 // Connect to Database
 connectDB();
@@ -32,6 +33,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/appointment", appointmentRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.listen(port, () => {
   console.log(`Server is Listining On ${port}`);

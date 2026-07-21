@@ -46,10 +46,8 @@ const userSchema = new mongoose.Schema(
     ],
     appointments: [
       {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "appointment",
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Appointment",
       },
     ],
     isLoggedinn: {

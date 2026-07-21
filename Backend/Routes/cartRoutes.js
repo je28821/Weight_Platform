@@ -8,7 +8,7 @@ const {
   increaseCount,
   decreaseCount,
   removecartItem,
-} = require("../Controller/productController");
+} = require("../Controller/cartController");
 
 router.get("/", isLoggedIn, getCart);
 router.post("/add/:id", isLoggedIn, cartAdd);

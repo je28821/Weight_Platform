@@ -1,4 +1,6 @@
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import {
   AreaChart,
   Area,
@@ -8,22 +10,58 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-// Mock data for the chart
-const revenueData = [
-  { name: "Jan", revenue: 120000 },
-  { name: "Feb", revenue: 135000 },
-  { name: "Mar", revenue: 125000 },
-  { name: "Apr", revenue: 180000 },
-  { name: "May", revenue: 210000 },
-  { name: "Jun", revenue: 245000 },
-  { name: "Mar", revenue: 125000 },
-  { name: "Apr", revenue: 180000 },
-  { name: "May", revenue: 210000 },
-  { name: "Jun", revenue: 245000 },
-];
+import { getDashboardData } from "../Api/api";
+import { FaBoxOpen } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function AdminDashboard() {
+  const [dashboard, setDashboard] = useState({
+    stats: {
+      totalUsers: 0,
+      totalProducts: 0,
+      totalAppointments: 0,
+      totalOrders: 0,
+      revenue: 0,
+    },
+    recentAppointments: [],
+    recentOrders: [],
+    appointmentChart: [],
+  });
+
+  const months = [
+    "",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const chartData = dashboard.appointmentChart.map((item) => ({
+    month: months[item._id],
+    appointments: item.appointments,
+  }));
+
+  console.log(chartData);
+  useEffect(() => {
+    async function fetchDashboard() {
+      const res = await getDashboardData();
+      console.log(res);
+
+      if (res.success) {
+        setDashboard(res.appointment);
+      }
+    }
+
+    fetchDashboard();
+  }, []);
   return (
     <div className="min-h-screen bg-[#FAF4ED] pb-12 font-sans text-gray-800">
       {/* Header */}
@@ -37,9 +75,22 @@ export default function AdminDashboard() {
           </p>
         </div>
         {/* Profile Avatar / Indicator instead of Logout */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 shadow-md"></div>
-        </div>
+        <Link
+          to="/product"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl
+             border border-amber-300
+             bg-white
+             text-amber-600
+             font-semibold
+             shadow-md
+             hover:bg-amber-500
+             hover:text-white
+             hover:border-amber-500
+             transition-all duration-300"
+        >
+          <FaBoxOpen className="text-lg" />
+          <span>Product Management</span>
+        </Link>
       </header>
 
       <div className="max-w-7xl mx-auto px-6 space-y-8">
@@ -49,14 +100,14 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start">
               <h3 className="text-gray-400 font-medium text-sm uppercase tracking-wider">
-                Revenue
+                Users
               </h3>
               <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-lg">
                 +18%
               </span>
             </div>
             <h1 className="text-3xl font-black text-gray-900 mt-4">
-              ₹2,45,000
+              {dashboard.stats.totalUsers}
             </h1>
             <p className="text-emerald-600 mt-2 text-sm font-medium">
               vs. last month
@@ -64,7 +115,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Card 2 */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          {/* <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start">
               <h3 className="text-gray-400 font-medium text-sm uppercase tracking-wider">
                 Orders
@@ -77,7 +128,7 @@ export default function AdminDashboard() {
             <p className="text-amber-600 mt-2 text-sm font-medium">
               15 Pending dispatch
             </p>
-          </div>
+          </div> */}
 
           {/* Card 3 */}
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
@@ -86,9 +137,11 @@ export default function AdminDashboard() {
                 Appointments
               </h3>
             </div>
-            <h1 className="text-3xl font-black text-gray-900 mt-4">42</h1>
+            <h1 className="text-3xl font-black text-gray-900 mt-4">
+              {dashboard.stats.totalAppointments}
+            </h1>
             <p className="text-indigo-500 mt-2 text-sm font-medium">
-              6 Scheduled for today
+              Scheduled
             </p>
           </div>
 
@@ -102,70 +155,12 @@ export default function AdminDashboard() {
                 Restock
               </span>
             </div>
-            <h1 className="text-3xl font-black text-gray-900 mt-4">87</h1>
+            <h1 className="text-3xl font-black text-gray-900 mt-4">
+              {dashboard.stats.totalProducts}
+            </h1>
             <p className="text-rose-500 mt-2 text-sm font-medium">
               8 Items low on stock
             </p>
-          </div>
-        </div>
-
-        {/* Interactive Revenue Chart */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">
-              Revenue Overview
-            </h2>
-            <select className="bg-gray-50 border-none text-sm text-gray-600 rounded-xl px-4 py-2 focus:ring-0 cursor-pointer">
-              <option>Last 6 Months</option>
-              <option>This Year</option>
-            </select>
-          </div>
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={revenueData}
-                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="#f3f4f6"
-                />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  dy={10}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: "1rem",
-                    border: "none",
-                    boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#f59e0b"
-                  strokeWidth={4}
-                  fillOpacity={1}
-                  fill="url(#colorRevenue)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
           </div>
         </div>
 
@@ -224,10 +219,12 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-900">Appointments</h2>
+
               <button className="text-amber-600 text-sm font-semibold hover:text-amber-700">
                 View All
               </button>
             </div>
+
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -237,28 +234,113 @@ export default function AdminDashboard() {
                     <th className="pb-4 font-medium text-right">Status</th>
                   </tr>
                 </thead>
+
                 <tbody className="text-sm">
-                  <tr className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition">
-                    <td className="py-4 font-medium text-gray-800">Dhruv</td>
-                    <td className="py-4 text-gray-500">Home Repair</td>
-                    <td className="py-4 text-right">
-                      <span className="bg-orange-100 text-orange-700 px-3 py-1.5 rounded-xl font-semibold text-xs">
-                        Pending
-                      </span>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition">
-                    <td className="py-4 font-medium text-gray-800">Karan</td>
-                    <td className="py-4 text-gray-500">Product Demo</td>
-                    <td className="py-4 text-right">
-                      <span className="bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-xl font-semibold text-xs">
-                        Accepted
-                      </span>
-                    </td>
-                  </tr>
+                  {dashboard.recentAppointments.length > 0 ? (
+                    dashboard.recentAppointments.map((appointment) => (
+                      <tr
+                        key={appointment._id}
+                        className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition"
+                      >
+                        <td className="py-4 font-medium text-gray-800">
+                          {appointment.user?.name || "N/A"}
+                        </td>
+
+                        <td className="py-4 text-gray-500">
+                          {appointment.type}
+                        </td>
+
+                        <td className="py-4 text-right">
+                          <span
+                            className={`px-3 py-1.5 rounded-xl font-semibold text-xs ${
+                              appointment.status === "Pending"
+                                ? "bg-orange-100 text-orange-700"
+                                : appointment.status === "Accepted"
+                                  ? "bg-indigo-100 text-indigo-700"
+                                  : appointment.status === "Rejected"
+                                    ? "bg-red-100 text-red-700"
+                                    : appointment.status === "Completed"
+                                      ? "bg-green-100 text-green-700"
+                                      : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {appointment.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        className="py-8 text-center text-gray-500"
+                      >
+                        No appointments found.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+        {/* Interactive Revenue Chart */}
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">
+              Revenue Overview
+            </h2>
+            <select className="bg-gray-50 border-none text-sm text-gray-600 rounded-xl px-4 py-2 focus:ring-0 cursor-pointer">
+              <option>Last 6 Months</option>
+              <option>This Year</option>
+            </select>
+          </div>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart
+                data={chartData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#f3f4f6"
+                />
+                <XAxis
+                  dataKey="month"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#9ca3af", fontSize: 12 }}
+                  dy={10}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#9ca3af", fontSize: 12 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: "1rem",
+                    border: "none",
+                    boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="appointments"
+                  stroke="#f59e0b"
+                  strokeWidth={4}
+                  fillOpacity={1}
+                  fill="url(#colorRevenue)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
 

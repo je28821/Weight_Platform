@@ -16,8 +16,10 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import ProductDetails from "./Pages/ProductDetails";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MyActivity from "./Pages/UserDashboard";
+import UserDashboard from "./Pages/UserDashboard";
 import AppointmentRequests from "./Pages/Appointment";
+import Product from "./Pages/Product";
+import ProductForm from "./Pages/ProductForm";
 
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -36,7 +38,9 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="/activity" element={<MyActivity />} />
+            <Route path="/activity" element={<UserDashboard />} />
+            <Route path="/product" element={<Product />} />
+            <Route path="/addproduct" element={<ProductForm />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="/appointment" element={<AppointmentRequests />} />

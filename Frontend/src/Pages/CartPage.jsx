@@ -14,7 +14,6 @@ const CartPage = () => {
 
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.carts);
-  console.log(cart);
 
   useEffect(() => {
     dispatch(fetchCart());
@@ -179,7 +178,8 @@ const CartPage = () => {
                 </div>
 
                 <button
-                  disabled={cart.length === 0}
+                  onClick={() => window.scrollTo(0, 0)}
+                  onClick={() => navigate("/orderform")}
                   className="mt-10 w-full rounded-xl bg-indigo-600 py-4 text-lg font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                 >
                   Proceed to Payment

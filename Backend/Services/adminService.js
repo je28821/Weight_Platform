@@ -43,3 +43,14 @@ module.exports.getDashboardData = async () => {
     appointmentChart,
   };
 };
+
+module.exports.addProducts = async (image, data) => {
+  try {
+    const product = await Product.create({ ...data, image: image });
+
+    return product;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

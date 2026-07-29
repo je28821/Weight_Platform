@@ -5,6 +5,7 @@ import {
   countDCart,
   countICart,
   getCartData,
+  clearCartApi,
 } from "../../../Api/api";
 
 export const addToCart = createAsyncThunk(
@@ -54,6 +55,18 @@ export const removecart = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const res = await cartRemove(id);
+      return res.cart;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || err.message);
+    }
+  },
+);
+
+export const clearCart = createAsyncThunk(
+  "cart/claerCart",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await clearCartApi();
       return res.cart;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);

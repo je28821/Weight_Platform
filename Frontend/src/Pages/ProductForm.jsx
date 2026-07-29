@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { productSchema } from "../Validator/productValidator";
+import { addProduct } from "../Api/api";
+import { useNavigate } from "react-router-dom";
 
 const ProductForm = () => {
   const [product, setProduct] = useState({
@@ -7,7 +9,6 @@ const ProductForm = () => {
     price: "",
     stock: "",
     category: "",
-    image: "",
     description: {
       overview: "",
       specifications: {
@@ -19,26 +20,16 @@ const ProductForm = () => {
       },
     },
   });
-  const [errors, setErrors] = useState({});
+  const [image, setImage] = useState(null);
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-
-    if (!allowedTypes.includes(file.type)) {
-      alert("Only JPG, JPEG and PNG files are allowed.");
-      e.target.value = "";
-      return;
-    }
-
-    setProduct({
-      ...product,
-      image: file,
-    });
+    setImage(e.target.files[0]);
   };
+
+  // Added separate state for safely displaying the image preview
+  const [imagePreview, setImagePreview] = useState("");
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setProduct({
@@ -70,16 +61,32 @@ const ProductForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const result = productSchema.safeParse(product);
-    console.log(result);
+
     if (!result.success) {
-      setErrors(result.error.flatten().fieldErrors);
+      setErrors(result.error.format());
       return;
     }
+    const formData = new FormData();
+
+    formData.append("image", image);
+    formData.append("description", JSON.stringify(product.description));
+
+    Object.entries(result.data).forEach(([key, value]) => {
+      if (key !== "description") {
+        formData.append(key, value);
+      }
+    });
 
     setErrors({});
+    try {
+      let res = await addProduct(formData);
+      if (res) {
+        navigate("/product");
+      }
+    } catch (err) {}
   };
 
   return (
@@ -112,9 +119,9 @@ const ProductForm = () => {
                   placeholder="Smart BMI Scale"
                   className="w-full rounded-xl border border-[#E8DCCB] p-3 focus:ring-2 focus:ring-orange-300 outline-none"
                 />
-                {errors.name && (
+                {errors.name?._errors && (
                   <p className="mt-2 ml-2 text-sm text-red-400">
-                    {errors.name[0]}
+                    {errors.name._errors[0]}
                   </p>
                 )}
               </div>
@@ -132,9 +139,9 @@ const ProductForm = () => {
                     placeholder="2499"
                     className="w-full rounded-xl border border-[#E8DCCB] p-3 focus:ring-2 focus:ring-orange-300 outline-none"
                   />
-                  {errors.price && (
+                  {errors.price?._errors && (
                     <p className="mt-2 ml-2 text-sm text-red-400">
-                      {errors.price[0]}
+                      {errors.price._errors[0]}
                     </p>
                   )}
                 </div>
@@ -151,9 +158,9 @@ const ProductForm = () => {
                     placeholder="15"
                     className="w-full rounded-xl border border-[#E8DCCB] p-3 focus:ring-2 focus:ring-orange-300 outline-none"
                   />
-                  {errors.stock && (
+                  {errors.stock?._errors && (
                     <p className="mt-2 ml-2 text-sm text-red-400">
-                      {errors.stock[0]}
+                      {errors.stock._errors[0]}
                     </p>
                   )}
                 </div>
@@ -171,9 +178,9 @@ const ProductForm = () => {
                   placeholder="Personal Scale"
                   className="w-full rounded-xl border border-[#E8DCCB] p-3 focus:ring-2 focus:ring-orange-300 outline-none"
                 />
-                {errors.category && (
+                {errors.category?._errors && (
                   <p className="mt-2 ml-2 text-sm text-red-400">
-                    {errors.category[0]}
+                    {errors.category._errors[0]}
                   </p>
                 )}
               </div>
@@ -189,9 +196,9 @@ const ProductForm = () => {
                   onChange={handleImageChange}
                   className="w-full rounded-xl border border-[#E8DCCB] p-3 file:mr-4 file:rounded-lg file:border-0 file:bg-orange-500 file:px-4 file:py-2 file:text-white file:cursor-pointer hover:file:bg-orange-600"
                 />
-                {errors.image && (
+                {errors.image?._errors && (
                   <p className="mt-2 ml-2 text-sm text-red-400">
-                    {errors.image[0]}
+                    {errors.image._errors[0]}
                   </p>
                 )}
               </div>
@@ -207,9 +214,9 @@ const ProductForm = () => {
                   placeholder="Bluetooth-enabled smart scale with BMI and body fat analysis..."
                   className="w-full rounded-xl border border-[#E8DCCB] p-3 focus:ring-2 focus:ring-orange-300 outline-none resize-none"
                 />
-                {errors.description?.overview && (
+                {errors.description?.overview?._errors && (
                   <p className="mt-2 ml-2 text-sm text-red-400">
-                    {errors.description.overview[0]}
+                    {errors.description.overview._errors[0]}
                   </p>
                 )}
               </div>
@@ -323,15 +330,14 @@ const ProductForm = () => {
                   </div>
                 </div>
 
-                {/* Image Preview */}
-                {product.image && (
+                {/* FIX: Use imagePreview state here instead of the File object */}
+                {imagePreview && (
                   <div className="mt-8">
                     <p className="font-semibold text-gray-700 mb-3">
                       Image Preview
                     </p>
-
                     <img
-                      src={product.image}
+                      src={imagePreview}
                       alt="Preview"
                       className="h-60 w-full rounded-2xl object-cover border border-[#E8DCCB]"
                     />
@@ -345,6 +351,10 @@ const ProductForm = () => {
           <div className="bg-[#FFF9F4] border-t border-[#E8DCCB] p-6 flex flex-col sm:flex-row justify-end gap-4">
             <button
               type="reset"
+              onClick={() => {
+                setErrors({});
+                setImagePreview("");
+              }}
               className="px-8 py-3 rounded-xl border border-[#E8DCCB] hover:bg-[#FAF4ED] transition"
             >
               Cancel

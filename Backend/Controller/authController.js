@@ -20,7 +20,6 @@ module.exports.registerController = async (req, res) => {
 module.exports.loginController = async (req, res) => {
   try {
     const result = await authService.loginUser(req.body);
-
     return res.status(201).json({
       success: true,
       message: "Login successful",

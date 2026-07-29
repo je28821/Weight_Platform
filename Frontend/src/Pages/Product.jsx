@@ -11,14 +11,18 @@ import {
   FaShieldAlt,
   FaSearch,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { deleteProduct, homedata } from "../Api/api";
+import { Link, useNavigate } from "react-router-dom";
+import { deleteProduct, homedata, updateProduct } from "../Api/api";
+import { productSchema } from "../Validator/productValidator";
 
 export default function Product() {
   const [products, setProducts] = useState([]);
-  const [page, setpage] = useState(1);
-  const [limit, setlimit] = useState(9);
-  const [totalPages, setTotalPages] = useState(2);
+  const [errors, setErrors] = useState({});
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 9,
+  });
+  const [totalPages, setTotalPages] = useState();
   const [openEdit, setOpenEdit] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [form, setForm] = useState({
@@ -26,14 +30,19 @@ export default function Product() {
     price: "",
     stock: "",
     category: "",
-    overview: "",
-    brand: "",
-    capacity: "",
-    weight: "",
-    dimensions: "",
-    warranty: "",
-    image: "",
+    description: {
+      overview: "",
+      specifications: {
+        brand: "",
+        capacity: "",
+        weight: "",
+        dimensions: "",
+        warranty: "",
+      },
+    },
   });
+
+  const navigate = useNavigate();
 
   const handleDelete = async (id) => {
     try {
@@ -43,6 +52,62 @@ export default function Product() {
       console.log(err);
     }
   };
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const result = productSchema.safeParse(form);
+
+    if (!result.success) {
+      setErrors(result.error.format());
+      return;
+    }
+
+    setErrors({});
+
+    try {
+      const res = await updateProduct(editProduct._id, form);
+
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product._id === editProduct._id ? { ...product, ...form } : product,
+        ),
+      );
+      setEditProduct(null);
+      setOpenEdit(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleOverviewChange = (e) => {
+    setForm({
+      ...form,
+      description: {
+        ...form.description,
+        overview: e.target.value,
+      },
+    });
+  };
+
+  const handleSpecificationChange = (e) => {
+    setForm({
+      ...form,
+      description: {
+        ...form.description,
+        specifications: {
+          ...form.description.specifications,
+          [e.target.name]: e.target.value,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (editProduct) {
@@ -51,29 +116,39 @@ export default function Product() {
         price: editProduct.price,
         stock: editProduct.stock,
         category: editProduct.category,
-        overview: editProduct.description.overview,
-        brand: editProduct.description.specifications.brand,
-        capacity: editProduct.description.specifications.capacity,
-        weight: editProduct.description.specifications.weight,
-        dimensions: editProduct.description.specifications.dimensions,
-        warranty: editProduct.description.specifications.warranty,
         image: editProduct.image,
+        description: {
+          overview: editProduct.description.overview,
+          specifications: {
+            brand: editProduct.description.specifications.brand,
+            capacity: editProduct.description.specifications.capacity,
+            weight: editProduct.description.specifications.weight,
+            dimensions: editProduct.description.specifications.dimensions,
+            warranty: editProduct.description.specifications.warranty,
+          },
+        },
       });
     }
   }, [editProduct]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const res = await homedata(page, limit);
+  const fetchProducts = async () => {
+    try {
+      const res = await homedata({
+        ...filters,
+      });
       console.log(res);
 
-      if (res.success) {
-        setProducts(res.data);
+      setProducts(res.products);
+      setTotalPages(res.totalpages);
+    } catch (err) {
+      if (err.name !== "CanceledError") {
+        console.log(err);
       }
     }
+  };
 
-    fetchData();
-  }, [page]);
+  useEffect(() => {
+    fetchProducts();
+  }, []);
   return (
     <div className="min-h-screen bg-[#FAF4ED] p-8">
       <div className="max-w-7xl mx-auto px-6">
@@ -238,286 +313,314 @@ export default function Product() {
           ))}
         </div>
         {openEdit && (
-          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-6">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
-              {/* Header */}
-              <div className="flex justify-between items-center px-8 py-6 border-b">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-gray-900/40 backdrop-blur-md transition-opacity">
+            <div className="bg-white rounded-[2rem] shadow-2xl shadow-black/20 w-full max-w-5xl max-h-[95vh] flex flex-col overflow-hidden relative animate-in fade-in zoom-in-95 duration-300">
+              {/* Sticky Header with Glassmorphism */}
+              <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-8 py-6 flex justify-between items-center">
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-800">
+                  <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
                     Edit Product
                   </h2>
-                  <p className="text-gray-500 mt-1">
-                    Update product information.
+                  <p className="text-sm font-medium text-gray-500 mt-1">
+                    Update your product information and specifications.
                   </p>
                 </div>
 
                 <button
                   onClick={() => setOpenEdit(false)}
-                  className="w-10 h-10 rounded-full hover:bg-gray-100 text-2xl"
+                  className="group relative w-11 h-11 flex items-center justify-center rounded-full bg-gray-50 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-colors duration-300"
                 >
-                  ×
+                  <span className="text-2xl text-gray-400 group-hover:text-rose-500 group-hover:rotate-90 transition-all duration-300">
+                    ×
+                  </span>
                 </button>
               </div>
 
-              {/* Form */}
-              <form className="p-8 space-y-8">
-                {/* Image Preview */}
-                <div className="flex flex-col items-center">
-                  {form.image ? (
-                    <img
-                      src={form.image}
-                      alt="Product"
-                      className="w-48 h-48 object-contain rounded-2xl"
-                    />
-                  ) : (
-                    <div className="w-48 h-48 rounded-2xl border bg-[#FAF4ED] flex items-center justify-center text-gray-400">
-                      No Image
+              {/* Scrollable Form Body */}
+              <div className="overflow-y-auto px-8 py-8 custom-scrollbar">
+                <form className="space-y-10">
+                  {/* Image Preview Area */}
+                  <div className="flex flex-col items-center">
+                    <div className="relative group rounded-3xl overflow-hidden bg-[#FAF4ED] border-2 border-dashed border-orange-200 w-48 h-48 flex items-center justify-center transition-all duration-300 hover:border-orange-400 hover:bg-orange-50/50 hover:shadow-lg">
+                      {form.image ? (
+                        <>
+                          <img
+                            src={form.image}
+                            alt="Product preview"
+                            className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-110"
+                          />
+                          {/* Subtle overlay on hover */}
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span className="text-white font-medium text-sm">
+                              Current Image
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center text-orange-300 group-hover:text-orange-500 transition-colors">
+                          <svg
+                            className="w-10 h-10 mb-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                          <span className="text-sm font-semibold">
+                            No Image
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
 
-                  <input
-                    type="text"
-                    value={form.image}
-                    disabled
-                    onChange={(e) =>
-                      setForm({ ...form, image: e.target.value })
-                    }
-                    className="mt-4 w-full border rounded-xl px-4 py-3 border-gray-300
-                      disabled:bg-gray-100
-                      disabled:text-gray-500
-                      disabled:border-gray-200
-                      disabled:cursor-not-allowed"
-                    placeholder="Image URL"
-                  />
-                </div>
-
-                {/* Basic Details */}
-
-                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Basic Details Section */}
                   <div>
-                    <label className="font-semibold text-gray-700">
-                      Product Name
-                    </label>
+                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-5 border-b border-gray-100 pb-2">
+                      Basic Details
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                      {/* Product Name */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Product Name
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={form.name}
+                          onChange={handleChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.name?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {errors.name._errors[0]}
+                          </p>
+                        )}
+                      </div>
 
-                    <input
-                      type="text"
-                      value={form.name}
-                      disabled
-                      onChange={(e) =>
-                        setForm({ ...form, name: e.target.value })
-                      }
-                      className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                    />
+                      {/* Category */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Category
+                        </label>
+                        <input
+                          type="text"
+                          name="category"
+                          value={form.category}
+                          onChange={handleChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.category?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {errors.category._errors[0]}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Price */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Price (₹)
+                        </label>
+                        <div className="relative">
+                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+                            ₹
+                          </span>
+                          <input
+                            type="number"
+                            name="price"
+                            value={form.price}
+                            onChange={handleChange}
+                            className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl pl-9 pr-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                          />
+                        </div>
+                        {errors.price?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {errors.price._errors[0]}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Stock */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Stock Quantity
+                        </label>
+                        <input
+                          type="number"
+                          name="stock"
+                          value={form.stock}
+                          onChange={handleChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.stock?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {errors.stock._errors[0]}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
+                  {/* Overview Section */}
                   <div>
-                    <label className="font-semibold text-gray-700">
-                      Category
-                    </label>
-
-                    <input
-                      type="text"
-                      value={form.category}
-                      disabled
-                      onChange={(e) =>
-                        setForm({ ...form, category: e.target.value })
-                      }
-                      className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
+                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-5 border-b border-gray-100 pb-2">
+                      Overview
+                    </h3>
+                    <textarea
+                      rows={4}
+                      value={form.description.overview}
+                      onChange={handleOverviewChange}
+                      placeholder="Detailed product description..."
+                      className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300 resize-none"
                     />
+                    {errors.description?.overview?._errors && (
+                      <p className="mt-2 text-sm font-medium text-rose-500">
+                        {errors.description.overview._errors[0]}
+                      </p>
+                    )}
                   </div>
 
+                  {/* Specifications Section */}
                   <div>
-                    <label className="font-semibold text-gray-700">Price</label>
+                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-5 border-b border-gray-100 pb-2">
+                      Technical Specifications
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                      {/* Brand */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Brand
+                        </label>
+                        <input
+                          name="brand"
+                          value={form.description.specifications.brand}
+                          onChange={handleSpecificationChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.description?.specifications?.brand?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {errors.description.specifications.brand._errors[0]}
+                          </p>
+                        )}
+                      </div>
 
-                    <input
-                      type="number"
-                      value={form.price}
-                      onChange={(e) =>
-                        setForm({ ...form, price: e.target.value })
-                      }
-                      className="w-full mt-2 border rounded-xl px-4 py-3"
-                    />
-                  </div>
+                      {/* Capacity */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Capacity
+                        </label>
+                        <input
+                          name="capacity"
+                          value={form.description.specifications.capacity}
+                          onChange={handleSpecificationChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.description?.specifications?.capacity
+                          ?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {
+                              errors.description.specifications.capacity
+                                ._errors[0]
+                            }
+                          </p>
+                        )}
+                      </div>
 
-                  <div>
-                    <label className="font-semibold text-gray-700">Stock</label>
+                      {/* Weight */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Weight
+                        </label>
+                        <input
+                          name="weight"
+                          value={form.description.specifications.weight}
+                          onChange={handleSpecificationChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.description?.specifications?.weight
+                          ?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {
+                              errors.description.specifications.weight
+                                ._errors[0]
+                            }
+                          </p>
+                        )}
+                      </div>
 
-                    <input
-                      type="number"
-                      value={form.stock}
-                      disabled
-                      onChange={(e) =>
-                        setForm({ ...form, stock: e.target.value })
-                      }
-                      className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                    />
-                  </div>
-                </div>
+                      {/* Dimensions */}
+                      <div>
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Dimensions
+                        </label>
+                        <input
+                          name="dimensions"
+                          value={form.description.specifications.dimensions}
+                          onChange={handleSpecificationChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.description?.specifications?.dimensions
+                          ?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {
+                              errors.description.specifications.dimensions
+                                ._errors[0]
+                            }
+                          </p>
+                        )}
+                      </div>
 
-                {/* Overview */}
-
-                <div>
-                  <label className="font-semibold text-gray-700">
-                    Overview
-                  </label>
-
-                  <textarea
-                    rows={4}
-                    value={form.overview}
-                    disabled
-                    onChange={(e) =>
-                      setForm({ ...form, overview: e.target.value })
-                    }
-                    className="w-full mt-2 border rounded-xl px-4 py-3 resize-none border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                  />
-                </div>
-
-                {/* Specifications */}
-
-                <div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-5">
-                    Specifications
-                  </h3>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="font-semibold text-gray-700">
-                        Brand
-                      </label>
-
-                      <input
-                        value={form.brand}
-                        disabled
-                        onChange={(e) =>
-                          setForm({ ...form, brand: e.target.value })
-                        }
-                        className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="font-semibold text-gray-700">
-                        Capacity
-                      </label>
-
-                      <input
-                        value={form.capacity}
-                        disabled
-                        onChange={(e) =>
-                          setForm({ ...form, capacity: e.target.value })
-                        }
-                        className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="font-semibold text-gray-700">
-                        Weight
-                      </label>
-
-                      <input
-                        value={form.weight}
-                        disabled
-                        onChange={(e) =>
-                          setForm({ ...form, weight: e.target.value })
-                        }
-                        className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="font-semibold text-gray-700">
-                        Dimensions
-                      </label>
-
-                      <input
-                        value={form.dimensions}
-                        disabled
-                        onChange={(e) =>
-                          setForm({
-                            ...form,
-                            dimensions: e.target.value,
-                          })
-                        }
-                        className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                      />
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <label className="font-semibold text-gray-700">
-                        Warranty
-                      </label>
-
-                      <input
-                        value={form.warranty}
-                        disabled
-                        onChange={(e) =>
-                          setForm({
-                            ...form,
-                            warranty: e.target.value,
-                          })
-                        }
-                        className="w-full mt-2 border rounded-xl px-4 py-3 border-gray-300
-                        disabled:bg-gray-100
-                        disabled:text-gray-500
-                        disabled:border-gray-200
-                        disabled:cursor-not-allowed"
-                      />
+                      {/* Warranty */}
+                      <div className="md:col-span-2">
+                        <label className="text-sm font-bold text-gray-700 mb-1.5 block">
+                          Warranty Details
+                        </label>
+                        <input
+                          name="warranty"
+                          value={form.description.specifications.warranty}
+                          onChange={handleSpecificationChange}
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-4 py-3.5 outline-none transition-all duration-300 focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 hover:border-orange-300"
+                        />
+                        {errors.description?.specifications?.warranty
+                          ?._errors && (
+                          <p className="mt-2 text-sm font-medium text-rose-500">
+                            {
+                              errors.description.specifications.warranty
+                                ._errors[0]
+                            }
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </form>
+              </div>
 
-                {/* Buttons */}
+              {/* Sticky Footer for Actions */}
+              <div className="sticky bottom-0 z-20 bg-gray-50 border-t border-gray-100 px-8 py-5 flex justify-end gap-4 rounded-b-[2rem]">
+                <button
+                  type="button"
+                  onClick={() => setOpenEdit(false)}
+                  className="px-8 py-3.5 rounded-xl font-bold text-gray-600 bg-white border border-gray-200 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200"
+                >
+                  Cancel
+                </button>
 
-                <div className="flex justify-end gap-4 border-t pt-6">
-                  <button
-                    type="button"
-                    onClick={() => setOpenEdit(false)}
-                    className="px-8 py-3 rounded-xl border border-gray-300 hover:bg-gray-100"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold hover:opacity-90"
-                  >
-                    Update Product
-                  </button>
-                </div>
-              </form>
+                <button
+                  type="button" // Changed from submit so it doesn't accidentally trigger parent forms, triggers onClick directly
+                  onClick={handleUpdate}
+                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+                >
+                  Save Changes
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -526,8 +629,13 @@ export default function Product() {
           <div className="flex justify-center">
             <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3">
               <button
-                disabled={page === 1}
-                onClick={() => setpage(page - 1)}
+                disabled={filters.page === 1}
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    page: prev.page - 1,
+                  }))
+                }
                 className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
               >
                 ← Previous
@@ -536,21 +644,30 @@ export default function Product() {
               {[...Array(totalPages)].map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setpage(index + 1)}
-                  className={`w-12 h-12 rounded-xl font-bold transition
-          ${
-            page === index + 1
-              ? "bg-black text-white scale-110 shadow-lg"
-              : "border hover:bg-[#FAF4ED]"
-          }`}
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      page: index + 1,
+                    }))
+                  }
+                  className={`w-12 h-12 rounded-xl font-bold transition ${
+                    filters.page === index + 1
+                      ? "bg-black text-white scale-110 shadow-lg"
+                      : "border hover:bg-[#FAF4ED]"
+                  }`}
                 >
                   {index + 1}
                 </button>
               ))}
 
               <button
-                disabled={page === totalPages}
-                onClick={() => setpage(page + 1)}
+                disabled={filters.page === totalPages}
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    page: prev.page + 1,
+                  }))
+                }
                 className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
               >
                 Next →

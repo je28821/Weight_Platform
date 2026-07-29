@@ -8,11 +8,19 @@ import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 
 const Home = ({ className }) => {
-  const [page, setpage] = useState(1);
-  const [limit, setlimit] = useState(9);
   const [products, setProducts] = useState([]);
-  const [totalPages, setTotalPages] = useState(2);
+  const [totalPages, setTotalPages] = useState();
   const [errors, setErrors] = useState({});
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "All",
+    minPrice: "",
+    maxPrice: "",
+    sort: "latest",
+    page: 1,
+    limit: 9,
+  });
+  const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
   const [formData, setFormData] = useState({
     type: "",
     date: "",
@@ -98,6 +106,34 @@ const Home = ({ className }) => {
       },
     }));
   };
+  const controllerRef = useRef();
+
+  const fetchProducts = async () => {
+    try {
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+
+      controllerRef.current = new AbortController();
+      const params = new URLSearchParams();
+
+      const res = await homedata(
+        {
+          ...filters,
+          search: debouncedSearch,
+        },
+        controllerRef.current.signal,
+      );
+      console.log(res);
+
+      setProducts(res.products);
+      setTotalPages(res.totalpages);
+    } catch (err) {
+      if (err.name !== "CanceledError") {
+        console.log(err);
+      }
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,17 +150,24 @@ const Home = ({ className }) => {
   };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await homedata(page, limit);
-        setProducts(data.data);
-      } catch (error) {
-        toast.error(error.message || "Something went wrong");
-      }
-    };
-
     fetchProducts();
-  }, [page]);
+  }, [
+    debouncedSearch,
+    filters.category,
+    filters.minPrice,
+    filters.maxPrice,
+    filters.sort,
+    filters.page,
+    filters.limit,
+  ]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(filters.search);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [filters.search]);
   return (
     <main className={`${className} bg-gray-50`}>
       {/* Hero Section */}
@@ -233,27 +276,183 @@ const Home = ({ className }) => {
       </section>
 
       {/* Products */}
-      <section className="bg-[#FAF4ED] py-10" ref={productRef}>
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <span className="bg-white px-5 py-2 rounded-full shadow-md font-semibold">
+      <section className="bg-[#FAF4ED] py-12 lg:py-20" ref={productRef}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-10 lg:mb-16">
+            <span className="inline-block bg-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full shadow-sm border border-orange-100 text-xs sm:text-sm font-bold text-orange-600 uppercase tracking-widest">
               ⭐ Premium Collection
             </span>
 
-            <h2 className="text-5xl font-bold mt-6 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-5 sm:mt-6 text-gray-900 tracking-tight">
               Featured Products
             </h2>
 
-            <p className="mt-5 text-gray-600 max-w-3xl mx-auto text-lg">
+            <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg leading-relaxed">
               Explore our premium collection of digital weight scales designed
               for accuracy, durability, and smart health tracking.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
+          {/* Filters */}
+          <div className="bg-white rounded-2xl shadow-md border border-orange-100 p-5 mb-10">
+            <div className="flex flex-col lg:flex-row gap-4 items-center">
+              {/* Search */}
+              <div className="w-full lg:flex-1">
+                <input
+                  type="text"
+                  placeholder="🔍 Search products..."
+                  value={filters.search}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      search: e.target.value,
+                      page: 1,
+                    }))
+                  }
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition"
+                />
+              </div>
+
+              {/* Category */}
+              <div className="w-full sm:w-auto">
+                <select
+                  value={filters.category}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                      page: 1,
+                    }))
+                  }
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none bg-white"
+                >
+                  <option value="All">All Categories</option>
+                  <option value="Personal Scale">Personal Scale</option>
+                  <option value="Kitchen Scale">Kitchen Scale</option>
+                  <option value="Parcel Scale">Parcel Scale</option>
+                  <option value="Industrial Scale">Industrial Scale</option>
+                </select>
+              </div>
+
+              {/* Price */}
+              <div className="w-full sm:w-auto">
+                <select
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    let min = "";
+                    let max = "";
+
+                    if (value === "0-1000") {
+                      min = 0;
+                      max = 1000;
+                    }
+
+                    if (value === "1000-3000") {
+                      min = 1000;
+                      max = 3000;
+                    }
+
+                    if (value === "3000-5000") {
+                      min = 3000;
+                      max = 5000;
+                    }
+
+                    if (value === "5000+") {
+                      min = 5000;
+                    }
+
+                    setFilters((prev) => ({
+                      ...prev,
+                      minPrice: min,
+                      maxPrice: max,
+                      page: 1,
+                    }));
+                  }}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none bg-white"
+                >
+                  <option value="All">All Prices</option>
+                  <option value="0-1000">$0 - $1,000</option>
+                  <option value="1000-3000">$1,001 - $3,000</option>
+                  <option value="3000-5000">$3,001 - $5,000</option>
+                  <option value="5000+">$5,000+</option>
+                </select>
+              </div>
+
+              {/* Sort */}
+              <div className="w-full sm:w-auto">
+                <select
+                  value={filters.sort}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      sort: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none bg-white"
+                >
+                  <option value="">Sort By</option>
+                  <option value="low">Price: Low → High</option>
+                  <option value="high">Price: High → Low</option>
+                  <option value="name">Name: A → Z</option>
+                  <option value="latest">Latest</option>
+                </select>
+              </div>
+
+              {/* Reset Button */}
+              <button
+                onClick={() => {
+                  setFilters({
+                    search: "",
+                    category: "All",
+                    minPrice: "",
+                    maxPrice: "",
+                    sort: "latest",
+                    page: 1,
+                    limit: 9,
+                  });
+                }}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-all duration-300"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+
+          {/* Product Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))
+            ) : (
+              <div className="col-span-full py-16 text-center">
+                <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-10 max-w-md mx-auto">
+                  <div className="text-5xl mb-4">📦</div>
+
+                  <h3 className="text-2xl font-bold text-gray-800">
+                    No Products Found
+                  </h3>
+
+                  <p className="text-gray-500 mt-3">
+                    We couldn't find any products matching your filters.
+                  </p>
+
+                  <button
+                    onClick={() => {
+                      setSearch("");
+                      setCategory("All");
+                      setPrice("All");
+                      setSortBy("");
+                    }}
+                    className="mt-6 px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -263,8 +462,13 @@ const Home = ({ className }) => {
         <div className="flex justify-center">
           <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3">
             <button
-              disabled={page === 1}
-              onClick={() => setpage(page - 1)}
+              disabled={filters.page === 1}
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: prev.page - 1,
+                }))
+              }
               className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
             >
               ← Previous
@@ -273,21 +477,30 @@ const Home = ({ className }) => {
             {[...Array(totalPages)].map((_, index) => (
               <button
                 key={index}
-                onClick={() => setpage(index + 1)}
-                className={`w-12 h-12 rounded-xl font-bold transition
-          ${
-            page === index + 1
-              ? "bg-black text-white scale-110 shadow-lg"
-              : "border hover:bg-[#FAF4ED]"
-          }`}
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    page: index + 1,
+                  }))
+                }
+                className={`w-12 h-12 rounded-xl font-bold transition ${
+                  filters.page === index + 1
+                    ? "bg-black text-white scale-110 shadow-lg"
+                    : "border hover:bg-[#FAF4ED]"
+                }`}
               >
                 {index + 1}
               </button>
             ))}
 
             <button
-              disabled={page === totalPages}
-              onClick={() => setpage(page + 1)}
+              disabled={filters.page === totalPages}
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  page: prev.page + 1,
+                }))
+              }
               className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
             >
               Next →

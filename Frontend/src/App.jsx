@@ -20,6 +20,9 @@ import UserDashboard from "./Pages/UserDashboard";
 import AppointmentRequests from "./Pages/Appointment";
 import Product from "./Pages/Product";
 import ProductForm from "./Pages/ProductForm";
+import OrderForm from "./Pages/OrderForm";
+import UserRoute from "./Layouts/UserRoutes";
+import AdminRoute from "./Layouts/AdminRoute";
 
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -34,16 +37,21 @@ function App() {
       <GoogleOAuthProvider clientId={clientId}>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/activity" element={<UserDashboard />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/addproduct" element={<ProductForm />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/appointment" element={<AppointmentRequests />} />
+            <Route element={<UserRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/activity" element={<UserDashboard />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/orderform" element={<OrderForm />} />
+            </Route>
+            <Route element={<AdminRoute />}>
+              <Route path="/product" element={<Product />} />
+              <Route path="/addproduct" element={<ProductForm />} />
+              <Route path="/dashboard" element={<AdminDashboard />} />
+              <Route path="/appointment" element={<AppointmentRequests />} />
+            </Route>
             <Route path="*" element={<Home />} />
           </Route>
 

@@ -73,3 +73,27 @@ module.exports.handleIgnore = async (id) => {
   );
   return appointments;
 };
+
+module.exports.deleteAppointment = async (id) => {
+  const appointment = await Appointment.findById(id);
+
+  if (!appointment) {
+    throw new Error("Appointment not found");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    appointment.user,
+    {
+      $pull: {
+        appointments: appointment._id,
+      },
+    },
+    {
+      new: true,
+    },
+  );
+
+  const result = await Appointment.findByIdAndDelete(id);
+
+  return result;
+};

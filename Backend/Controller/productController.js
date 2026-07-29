@@ -3,19 +3,13 @@ const productService = require("../Services/productService");
 
 module.exports.homeController = async (req, res) => {
   try {
-    let page = Number(req.query.page) || 1;
-    let limit = Number(req.query.limit) || 9;
-
-    if (page < 1) page = 1;
-    if (limit < 1) limit = 9;
-    if (limit > 9) limit = 9;
-
-    const result = await productService.homeService(page, limit);
+    const result = await productService.homeService(req.query);
 
     return res.status(200).json({
       success: true,
       message: "Products fetched successfully",
-      data: result,
+      products: result.products,
+      totalpages: result.totalPages,
     });
   } catch (error) {
     return res.status(400).json({
@@ -42,6 +36,26 @@ module.exports.getProduct = async (req, res) => {
   }
 };
 
+module.exports.updateProduct = async (req, res) => {
+  try {
+    let { id } = req.params;
+    let data = req.body;
+
+    const result = await productService.updateProduct(id, data);
+
+    return res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports.deleteProduct = async (req, res) => {
   try {
     let { id } = req.params;
@@ -49,7 +63,7 @@ module.exports.deleteProduct = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Product Deleted successfully",
-      cart: result,
+      data: result,
     });
   } catch (error) {
     return res.status(400).json({

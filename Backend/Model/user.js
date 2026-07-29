@@ -50,6 +50,12 @@ const userSchema = new mongoose.Schema(
         ref: "Appointment",
       },
     ],
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order",
+      },
+    ],
     isLoggedinn: {
       type: Boolean,
       default: false,

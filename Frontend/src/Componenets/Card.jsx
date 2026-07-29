@@ -1,4 +1,3 @@
-import React from "react";
 import { addtoCart } from "../Api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../Redux/Features/Cart/cartapi";
@@ -40,11 +39,9 @@ const ProductCard = ({ product }) => {
         </div>
       </Link>
 
-      {/* Button - NOT clickable for navigation */}
       <div className="p-5 pt-4">
         <button
           onClick={(e) => {
-            e.stopPropagation();
             dispatch(addToCart(product._id));
           }}
           className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition font-medium"

@@ -1,6 +1,6 @@
-import { z } from "zod";
+const { z } = require("zod");
 
-export const productSchema = z.object({
+module.exports.productSchema = z.object({
   name: z
     .string()
     .trim()
@@ -20,17 +20,6 @@ export const productSchema = z.object({
     .min(0, "Stock cannot be negative."),
 
   category: z.string().trim().min(2, "Category is required."),
-
-  // image: z
-  //   .instanceof(File, {
-  //     message: "Please select an image.",
-  //   })
-  //   .refine(
-  //     (file) => ["image/jpeg", "image/jpg", "image/png"].includes(file.type),
-  //     {
-  //       message: "Only JPG, JPEG and PNG images are allowed.",
-  //     },
-  //   ),
 
   description: z.object({
     overview: z

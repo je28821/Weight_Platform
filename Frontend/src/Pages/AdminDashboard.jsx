@@ -48,12 +48,9 @@ export default function AdminDashboard() {
     month: months[item._id],
     appointments: item.appointments,
   }));
-
-  console.log(chartData);
   useEffect(() => {
     async function fetchDashboard() {
       const res = await getDashboardData();
-      console.log(res);
 
       if (res.success) {
         setDashboard(res.appointment);

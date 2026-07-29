@@ -10,14 +10,16 @@ const {
   adminAppointmnet,
   handleConfirm,
   handleIgnore,
+  deleteAppointment,
 } = require("../Controller/appointmentController");
-const { isLoggedIn } = require("../Middalwares/authMiddalware");
+const { isLoggedIn, isAdmin } = require("../Middalwares/authMiddalware");
 
 router.get("/", isLoggedIn, getAppointmnet);
-router.get("/admin", isLoggedIn, adminAppointmnet);
-
 router.post("/", isLoggedIn, cheack(appointmentSchema), addAppointmnet);
-router.post("/confirm", isLoggedIn, handleConfirm);
-router.post("/ignore", isLoggedIn, handleIgnore);
+router.delete("/:id", isLoggedIn, deleteAppointment);
+
+router.get("/admin", isLoggedIn, isAdmin, adminAppointmnet);
+router.post("/confirm", isLoggedIn, isAdmin, handleConfirm);
+router.post("/ignore", isLoggedIn, isAdmin, handleIgnore);
 
 module.exports = router;

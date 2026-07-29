@@ -89,3 +89,22 @@ module.exports.handleIgnore = async (req, res) => {
     });
   }
 };
+
+module.exports.deleteAppointment = async (req, res) => {
+  try {
+    let { id } = req.params;
+
+    const result = await appointmentService.deleteAppointment(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Appointment Deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

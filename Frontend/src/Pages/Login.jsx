@@ -75,14 +75,18 @@ export default function Login() {
     }
 
     setErrors({});
+    try {
+      const res = await login(formData);
 
-    let res = await login(formData);
-    if (res) {
-      localStorage.setItem("token", res.token);
-      useEffect(() => {
-        dispatch(fetchCart());
-      }, [dispatch]);
-      navigate("/");
+      if (res) {
+        localStorage.setItem("token", res.token);
+
+        await dispatch(fetchCart());
+
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -105,8 +109,6 @@ export default function Login() {
           className="w-80 xl:w-[450px] mt-12 animate-bounce"
         />
       </div>
-
-      {/* RIGHT SIDE */}
 
       <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-md bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-8">

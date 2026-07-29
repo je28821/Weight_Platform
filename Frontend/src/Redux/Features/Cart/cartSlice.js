@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   addToCart,
+  clearCart,
   decareaseCartCount,
   fetchCart,
   increaseCartCount,
@@ -51,6 +52,11 @@ const cartSlice = createSlice({
 
       .addCase(removecart.fulfilled, (state, action) => {
         state.carts = action.payload;
+      })
+
+      .addCase(clearCart.fulfilled, (state) => {
+        state.carts = [];
+        state.loading = false;
       });
   },
 });

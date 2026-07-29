@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   FaShoppingCart,
   FaHeart,
@@ -11,20 +11,26 @@ import {
   FaBoxOpen,
   FaBell,
   FaSignOutAlt,
+  FaInfoCircle,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import logo from "../assets/Logo.png";
 import { Link, Links, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../Api/api";
-import { clearCart } from "../Redux/Features/cart/cartSlice";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [profileMenu, setProfileMenu] = useState(false);
+  const [openNotification, setOpenNotification] = useState(false);
 
   const cart = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const notificationRef = useRef(null);
+  const token = localStorage.getItem("token");
+  const user = token ? jwtDecode(token) : null;
 
   const handleLogout = async () => {
     let res = await logout();
@@ -32,7 +38,6 @@ export default function Navbar() {
     if (res) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      dispatch(clearCart());
       navigate("/login");
     }
   };
@@ -101,67 +106,61 @@ export default function Navbar() {
             </li>
 
             <li>
-              <Link
-                to="/dashboard"
-                onClick={() => window.scrollTo(0, 0)}
-                className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
-              >
-                Dashboard
-                <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              {user?.role === "admin" && (
+                <Link
+                  to="/dashboard"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
+                >
+                  Dashboard
+                  <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              )}
             </li>
 
             <li>
-              <Link
-                to="/appointment"
-                onClick={() => window.scrollTo(0, 0)}
-                className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
-              >
-                Appointments
-                <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              {user?.role === "admin" && (
+                <Link
+                  to="/appointment"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="relative group px-2 py-1 text-gray-700 transition-all duration-300 hover:text-black"
+                >
+                  Appointments
+                  <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              )}
             </li>
           </ul>
 
           {/* Desktop Icons */}
           <div className="hidden lg:flex items-center gap-5">
-            {/* Notification */}
-            <Link
-              to="/notifications"
-              onClick={() => window.scrollTo(0, 0)}
-              className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
-            >
-              <FaBell className="text-xl text-gray-700" />
-
-              {/* Notification Count */}
-              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs font-medium">
-                3
-              </span>
-            </Link>
-
             {/* Cart */}
-            <Link
-              to="/cart"
-              onClick={() => window.scrollTo(0, 0)}
-              className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
-            >
-              <FaShoppingCart className="text-xl text-gray-700" />
+            {user?.role !== "admin" && (
+              <Link
+                to="/cart"
+                onClick={() => window.scrollTo(0, 0)}
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+              >
+                <FaShoppingCart className="text-xl text-gray-700" />
 
-              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs font-medium">
-                {cart.length}
-              </span>
-            </Link>
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-xs font-medium">
+                  {cart.length}
+                </span>
+              </Link>
+            )}
 
             {/* Profile */}
-            <Link
-              to="/activity"
-              onClick={() => window.scrollTo(0, 0)}
-              className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
-            >
-              <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110">
-                <FaUserCircle className="text-3xl text-gray-700" />
-              </button>
-            </Link>
+            {user?.role !== "admin" && (
+              <Link
+                to="/activity"
+                onClick={() => window.scrollTo(0, 0)}
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+              >
+                <button className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110">
+                  <FaUserCircle className="text-3xl text-gray-700" />
+                </button>
+              </Link>
+            )}
 
             {/* Logout */}
             <button
@@ -186,69 +185,78 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className="lg:hidden flex items-center justify-between w-full bg-[#FAF4ED] px-4 py-3">
-            {/* Left - Logo */}
-            <Link
-              to="/"
-              className="flex items-center gap-2 flex-shrink-0"
-            ></Link>
+          <div className="lg:hidden sticky top-0 z-50 flex items-center justify-between w-full  px-2 sm:px-4 py-2 sm:py-3 ">
+            {/* Left - Logo Placeholder */}
+            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+              {/* Logo goes here */}
+            </Link>
 
             {/* Center Navigation */}
-            <div className="flex items-center gap-7">
+            <div className="flex items-center gap-0.5 sm:gap-2">
               <Link
                 to="/"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="text-gray-700 hover:text-blue-600 transition"
+                className="p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
               >
-                <FaHome className="text-2xl" />
+                <FaHome className="text-[20px] sm:text-2xl" />
               </Link>
 
               <Link
-                to="/products"
+                to="/about"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="text-gray-700 hover:text-blue-600 transition"
+                className="p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
               >
-                <FaBoxOpen className="text-2xl" />
+                <FaInfoCircle className="text-[20px] sm:text-2xl" />
               </Link>
 
               <Link
-                to="/cart"
+                to="/contact"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="relative text-gray-700 hover:text-blue-600 transition"
+                className="p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
               >
-                <FaShoppingCart className="text-2xl" />
-
-                <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-black text-white text-[10px] flex items-center justify-center">
-                  {cart.length}
-                </span>
+                <FaPhoneAlt className="text-[20px] sm:text-2xl" />
               </Link>
             </div>
 
-            {/* Right */}
-            <div className="flex items-center gap-4">
+            {/* Right - Actions */}
+            <div className="flex items-center gap-0.5 sm:gap-2">
+              <Link
+                to="/cart"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="relative p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
+              >
+                <FaShoppingCart className="text-[20px] sm:text-2xl" />
+
+                {/* Cart Badge */}
+                <span className="absolute top-0 right-0 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] bg-black text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-[#FAF4ED] shadow-sm">
+                  {cart.length}
+                </span>
+              </Link>
+
               <Link
                 to="/notifications"
-                className="relative text-gray-700 hover:text-blue-600 transition"
+                className="relative p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
               >
-                <FaBell className="text-2xl" />
+                <FaBell className="text-[20px] sm:text-2xl" />
 
-                <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center">
+                {/* Notification Badge */}
+                <span className="absolute top-0 right-0 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] bg-red-500 text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-[#FAF4ED] shadow-sm">
                   3
                 </span>
               </Link>
 
               <Link
                 to="/activity"
-                className="text-gray-700 hover:text-blue-600 transition"
+                className="p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
               >
-                <FaUserCircle className="text-2xl" />
+                <FaUserCircle className="text-[20px] sm:text-2xl" />
               </Link>
 
               <button
                 onClick={handleLogout}
-                className="text-red-500 hover:text-red-600 transition"
+                className="p-2 sm:p-2.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all active:scale-95"
               >
-                <FaSignOutAlt className="text-2xl" />
+                <FaSignOutAlt className="text-[20px] sm:text-2xl" />
               </button>
             </div>
           </div>

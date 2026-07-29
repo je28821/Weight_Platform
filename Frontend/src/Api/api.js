@@ -5,7 +5,7 @@ const API_BASE_URL =
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 api.interceptors.request.use(
@@ -37,8 +37,8 @@ export const logout = async () => {
   return response.data;
 };
 
-export const homedata = async (page, limit) => {
-  const response = await api.get(`/api/products?page=${page}&limit=${limit}`);
+export const homedata = async (params) => {
+  const response = await api.get(`/api/products`, { params });
   return response.data;
 };
 
@@ -69,6 +69,11 @@ export const countICart = async (id) => {
 
 export const cartRemove = async (id) => {
   const response = await api.delete(`/api/cart/remove/${id}`);
+  return response.data;
+};
+
+export const clearCartApi = async () => {
+  const response = await api.delete(`/api/cart`);
   return response.data;
 };
 
@@ -104,5 +109,30 @@ export const getDashboardData = async () => {
 
 export const deleteProduct = async (id) => {
   const response = await api.delete(`/api/products/${id}`);
+  return response.data;
+};
+
+export const addProduct = async (data) => {
+  const response = await api.post(`/api/admin`, data);
+  return response.data;
+};
+
+export const updateProduct = async (id, data) => {
+  const response = await api.put(`/api/products/${id}`, data);
+  return response.data;
+};
+
+export const deleteAppointment = async (id) => {
+  const response = await api.delete(`/api/appointment/${id}`);
+  return response.data;
+};
+
+export const getOrder = async () => {
+  const response = await api.get(`/api/orders`);
+  return response.data;
+};
+
+export const createOrder = async () => {
+  const response = await api.post(`/api/orders`);
   return response.data;
 };

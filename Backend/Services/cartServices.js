@@ -3,7 +3,6 @@ const User = require("../Model/user");
 
 module.exports.getCart = async (userId) => {
   const user = await User.findById(userId).populate("cartItems.product");
-  console.log(user.cartItems);
   return user.cartItems;
 };
 module.exports.addToCart = async (productId, userId) => {

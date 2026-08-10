@@ -1,9 +1,9 @@
 const User = require("../Model/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const mailer = require(".//mailServices");
+const mailer = require("./mailServices");
 const { OAuth2Client } = require("google-auth-library");
-const googleClient = require("../config/googleConfig");
+const googleClient = require("../Config/googleConfig");
 
 module.exports.registerUser = async (data) => {
   const { name, email, password, address, contactNo } = data;

@@ -1,6 +1,5 @@
 const { z } = require("zod");
-
-export const appointmentSchema = z
+module.exports.appointmentSchema = z
   .object({
     type: z.string().trim().min(1, "Appointment type is required"),
 

@@ -135,7 +135,6 @@ export default function Product() {
       const res = await homedata({
         ...filters,
       });
-      console.log(res);
 
       setProducts(res.products);
       setTotalPages(res.totalpages);

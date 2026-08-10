@@ -124,7 +124,6 @@ const Home = ({ className }) => {
         },
         controllerRef.current.signal,
       );
-      console.log(res);
 
       setProducts(res.products);
       setTotalPages(res.totalpages);

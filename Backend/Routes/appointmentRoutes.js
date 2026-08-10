@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { cheack } = require("../Middalwares/validator");
-const {
-  appointmentSchema,
-} = require("../../Frontend/src/Validator/appointment");
+const { appointmentSchema } = require("../Validators/appointmentValidator");
 const {
   addAppointmnet,
   getAppointmnet,

@@ -1,3 +1,7 @@
+const dns = require("dns");
+
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
 require("dotenv").config();
 const express = require("express");
 const connectDB = require("./Config/db");
@@ -21,7 +25,7 @@ connectDB();
 //Middlawares
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   }),
 );
@@ -39,6 +43,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is Listining On ${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server is listening on ${port}`);
 });

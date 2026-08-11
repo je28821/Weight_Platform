@@ -6,6 +6,7 @@ import {
   FileText,
   Lock,
 } from "lucide-react";
+import about from "../assets/about.png";
 
 const features = [
   {

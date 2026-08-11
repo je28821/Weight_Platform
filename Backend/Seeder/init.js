@@ -1,10 +1,16 @@
+const dns = require("dns");
+
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+require("dotenv").config({
+  path: "../.env",
+});
 const mongoose = require("mongoose");
 const { data } = require("./data");
 const Product = require("../Model/product");
 const Appointment = require("../Model/appointment");
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/portfoliio");
+  await mongoose.connect(process.env.MONGO_URL);
 }
 
 main()

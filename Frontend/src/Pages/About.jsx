@@ -57,11 +57,7 @@ export default function About() {
 
       {/* About */}
       <section className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
-        <img
-          src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800"
-          alt="Weight Scale"
-          className="rounded-3xl shadow-xl"
-        />
+        <img src={about} alt="Weight Scale" className="rounded-3xl shadow-xl" />
 
         <div>
           <h2 className="text-4xl font-bold mb-6">

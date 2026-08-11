@@ -19,6 +19,7 @@ import { Link, Links, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../Api/api";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -33,12 +34,23 @@ export default function Navbar() {
   const user = token ? jwtDecode(token) : null;
 
   const handleLogout = async () => {
-    let res = await logout();
+    try {
+      let res = await logout();
 
-    if (res) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      navigate("/login");
+      if (res) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        navigate("/login");
+        toast.success("Logout successfully");
+      }
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong",
+      );
     }
   };
 

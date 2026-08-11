@@ -14,6 +14,7 @@ import { login, loginGoogle } from "../Api/api";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchCart } from "../Redux/Features/Cart/cartapi";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -83,10 +84,18 @@ export default function Login() {
 
         await dispatch(fetchCart());
 
+        toast.success("Login successful!");
+
         navigate("/");
       }
     } catch (err) {
-      console.log(err);
+      console.error("Login error:", err);
+
+      toast.error(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Login failed. Please try again.",
+      );
     }
   };
 

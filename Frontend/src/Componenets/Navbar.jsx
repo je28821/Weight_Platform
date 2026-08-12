@@ -47,9 +47,7 @@ export default function Navbar() {
       console.error(error);
 
       toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Something went wrong",
+        error?.response?.message || error?.message || "Something went wrong",
       );
     }
   };

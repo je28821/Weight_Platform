@@ -140,6 +140,7 @@ const Home = ({ className }) => {
 
     if (!result.success) {
       setErrors(result.error.format());
+      toast.error("Fill The Details Properly !!");
       return;
     }
 
@@ -167,6 +168,16 @@ const Home = ({ className }) => {
 
     return () => clearTimeout(timer);
   }, [filters.search]);
+
+  useEffect(() => {
+    const justLoggedIn = localStorage.getItem("justLoggedIn");
+    console.log(justLoggedIn);
+
+    if (justLoggedIn === "true") {
+      toast.success("Welcome To Our Platform");
+      localStorage.removeItem("justLoggedIn");
+    }
+  }, []);
   return (
     <main className={`${className} bg-gray-50`}>
       {/* Hero Section */}

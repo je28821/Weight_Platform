@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { register } from "../Api/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -58,6 +59,7 @@ export default function Register() {
 
     if (!result.success) {
       setErrors(result.error.flatten().fieldErrors);
+      toast.error("Please Fill The Details Properly!!!.");
       return;
     }
 
@@ -66,6 +68,7 @@ export default function Register() {
     let res = await register(formData);
     if (res) {
       localStorage.setItem("token", res.token);
+      localStorage.setItem("justLoggedIn", "true");
       navigate("/");
     }
   };

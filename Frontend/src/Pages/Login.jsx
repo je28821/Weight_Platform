@@ -58,6 +58,8 @@ export default function Login() {
 
         await dispatch(fetchCart());
 
+        localStorage.setItem("justLoggedIn", "true");
+
         navigate("/");
       }
     } catch (error) {
@@ -72,19 +74,19 @@ export default function Login() {
 
     if (!result.success) {
       setErrors(result.error.flatten().fieldErrors);
+      toast.error("Please Fill The Details Properly!!!.");
       return;
     }
 
     setErrors({});
     try {
       const res = await login(formData);
-
       if (res) {
         localStorage.setItem("token", res.token);
 
         await dispatch(fetchCart());
 
-        toast.success("Login successful!");
+        localStorage.setItem("justLoggedIn", "true");
 
         navigate("/");
       }
@@ -92,7 +94,7 @@ export default function Login() {
       console.error("Login error:", err);
 
       toast.error(
-        err?.response?.data?.message ||
+        err?.response?.message ||
           err?.message ||
           "Login failed. Please try again.",
       );

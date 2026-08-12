@@ -2,12 +2,15 @@ import { addtoCart } from "../Api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../Redux/Features/Cart/cartapi";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const ProductCard = ({ product }) => {
   const { name, image, price, stock, category, description } = product;
 
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cartItem);
+  const token = localStorage.getItem("token");
+  const user = token ? jwtDecode(token) : null;
 
   return (
     <div className="group bg-white rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#C59D5F]/30 hover:-translate-y-1 flex flex-col h-full">
@@ -37,7 +40,7 @@ const ProductCard = ({ product }) => {
             <p className="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-widest mb-0.5">
               Price
             </p>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#C59D5F]">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#C59D5F] mb-4">
               ₹{price}
             </h3>
           </div>
@@ -45,18 +48,20 @@ const ProductCard = ({ product }) => {
       </Link>
 
       {/* Cart Button */}
-      <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-4 mt-auto">
-        <button
-          onClick={(e) => {
-            // Prevent default isn't strictly necessary since it's outside the Link,
-            // but keeps the click isolated from any unexpected bubbling
-            dispatch(addToCart(product._id));
-          }}
-          className="w-full bg-[#111827] text-white py-3 sm:py-3.5 rounded-xl hover:bg-black transition-all duration-300 font-semibold active:scale-[0.98] shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#111827] focus:ring-offset-2"
-        >
-          Add to Cart
-        </button>
-      </div>
+      {user.role != "admin" && (
+        <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-4 mt-auto">
+          <button
+            onClick={(e) => {
+              // Prevent default isn't strictly necessary since it's outside the Link,
+              // but keeps the click isolated from any unexpected bubbling
+              dispatch(addToCart(product._id));
+            }}
+            className="w-full bg-[#111827] text-white py-3 sm:py-3.5 rounded-xl hover:bg-black transition-all duration-300 font-semibold active:scale-[0.98] shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#111827] focus:ring-offset-2"
+          >
+            Add to Cart
+          </button>
+        </div>
+      )}
     </div>
   );
 };

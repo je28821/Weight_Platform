@@ -244,18 +244,6 @@ export default function Navbar() {
               </Link>
 
               <Link
-                to="/notifications"
-                className="relative p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
-              >
-                <FaBell className="text-[20px] sm:text-2xl" />
-
-                {/* Notification Badge */}
-                <span className="absolute top-0 right-0 min-w-[18px] sm:min-w-[20px] h-[18px] sm:h-[20px] bg-red-500 text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-[#FAF4ED] shadow-sm">
-                  3
-                </span>
-              </Link>
-
-              <Link
                 to="/activity"
                 className="p-2 sm:p-2.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50/50 rounded-xl transition-all active:scale-95"
               >

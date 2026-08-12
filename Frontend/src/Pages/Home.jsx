@@ -171,7 +171,6 @@ const Home = ({ className }) => {
 
   useEffect(() => {
     const justLoggedIn = localStorage.getItem("justLoggedIn");
-    console.log(justLoggedIn);
 
     if (justLoggedIn === "true") {
       toast.success("Welcome To Our Platform");
@@ -179,63 +178,72 @@ const Home = ({ className }) => {
     }
   }, []);
   return (
-    <main className={`${className} bg-gray-50`}>
+    <main
+      className={`${className} bg-[#FAF4ED] w-full overflow-x-hidden font-sans`}
+    >
       {/* Hero Section */}
       <section
-        className="relative min-h-screen bg-cover bg-center bg-no-repeat"
+        className="relative min-h-[100svh] flex items-center overflow-hidden bg-cover bg-[center_top_20%] sm:bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${Hero})` }}
       >
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FAF4ED] via-[#FAF4ED]/90 to-transparent" />
+        {/* Mobile Overlay: A subtle dark tint instead of a heavy white gradient. 
+      Desktop Overlay: Fades left to right naturally. */}
+        <div className="absolute inset-0 bg-black/20 sm:bg-gradient-to-r sm:from-[#FAF4ED] sm:via-[#FAF4ED]/80 sm:to-transparent" />
 
         {/* Content */}
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="relative z-10 max-w-7xl mx-auto h-screen flex items-center px-6"
+          className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20"
         >
-          <div className="max-w-xl">
+          {/* 
+      Removed the blurry white card wrapper completely. 
+      The content now sits directly on the background fully transparent.
+    */}
+          <div className="max-w-2xl mt-12 sm:mt-0">
             <motion.div
               variants={item}
-              className="inline-flex items-center gap-2 bg-white px-5 py-2 rounded-full shadow-lg mb-8"
+              className="inline-flex items-center gap-2 bg-white/90 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-sm mb-6 sm:mb-8 border border-[#C59D5F]/20"
             >
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-
-              <span className="text-sm font-semibold text-gray-700">
+              <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+              <span className="text-xs sm:text-sm font-bold tracking-wide text-gray-900 uppercase">
                 Owner : Dharmeshbhai Prajapati
               </span>
             </motion.div>
 
             <motion.h1
               variants={item}
-              className="text-6xl lg:text-7xl font-extrabold leading-tight text-gray-900"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-gray-900 drop-shadow-md sm:drop-shadow-none"
             >
               Shop Smart,
               <br />
-              Schedule Easily
+              <span className="text-[#000]">Schedule Easily</span>
             </motion.h1>
 
             <motion.p
               variants={item}
-              className="mt-8 text-lg leading-8 text-gray-700"
+              className="mt-4 sm:mt-8 text-base sm:text-lg lg:text-xl leading-relaxed sm:leading-8 text-gray-100 sm:text-gray-700 max-w-xl font-medium sm:font-normal drop-shadow-md sm:drop-shadow-none"
             >
               Premium smart weight scales designed to help you monitor your
               health with precision while allowing easy appointment booking with
               wellness experts.
             </motion.p>
 
-            <motion.div variants={item} className="flex gap-5 mt-10">
+            <motion.div
+              variants={item}
+              className="flex flex-col sm:flex-row gap-4 sm:gap-5 mt-8 sm:mt-10"
+            >
               <button
                 onClick={scrollToProducts}
-                className="bg-[#111827] hover:bg-black text-white px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto bg-[#111827] hover:bg-black text-white px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold active:scale-[0.98]"
               >
                 Shop Now
               </button>
 
               <button
                 onClick={scrollToAppointment}
-                className="bg-[#D4B483] hover:bg-[#C59D5F] text-[#111827] px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto bg-[#C59D5F] hover:bg-[#b88c4d] text-white px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl font-semibold active:scale-[0.98]"
               >
                 Book Appointment
               </button>
@@ -243,75 +251,85 @@ const Home = ({ className }) => {
           </div>
         </motion.div>
 
-        {/* Bottom Fade */}
-        <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-b from-transparent to-[#FAF4ED]" />
+        {/* Bottom Fade (Blends section into the next) */}
+        <div className="absolute bottom-0 left-0 w-full h-24 sm:h-36 bg-gradient-to-b from-transparent to-[#FAF4ED]" />
       </section>
 
-      <section className="bg-[#FAF4ED] py-5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white rounded-3xl shadow-lg p-8 text-center hover:-translate-y-2 hover:shadow-2xl transition">
-              <div className="text-5xl mb-4">🚚</div>
-              <h3 className="font-bold text-xl">Free Shipping</h3>
-              <p className="text-gray-600 mt-3">
-                Fast and secure delivery across India.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-3xl shadow-lg p-8 text-center hover:-translate-y-2 hover:shadow-2xl transition">
-              <div className="text-5xl mb-4">🛡</div>
-              <h3 className="font-bold text-xl">2 Year Warranty</h3>
-              <p className="text-gray-600 mt-3">
-                Trusted quality with warranty support.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-3xl shadow-lg p-8 text-center hover:-translate-y-2 hover:shadow-2xl transition">
-              <div className="text-5xl mb-4">📞</div>
-              <h3 className="font-bold text-xl">Expert Support</h3>
-              <p className="text-gray-600 mt-3">
-                Schedule appointments with professionals.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-3xl shadow-lg p-8 text-center hover:-translate-y-2 hover:shadow-2xl transition">
-              <div className="text-5xl mb-4">⚡</div>
-              <h3 className="font-bold text-xl">Smart Tracking</h3>
-              <p className="text-gray-600 mt-3">
-                Accurate health monitoring every day.
-              </p>
-            </div>
+      {/* Features Section */}
+      <section className="bg-[#FAF4ED] py-8 sm:py-12 relative z-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            {[
+              {
+                icon: "🚚",
+                title: "Free Shipping",
+                desc: "Fast and secure delivery across India.",
+              },
+              {
+                icon: "🛡",
+                title: "2 Year Warranty",
+                desc: "Trusted quality with warranty support.",
+              },
+              {
+                icon: "📞",
+                title: "Expert Support",
+                desc: "Schedule appointments with professionals.",
+              },
+              {
+                icon: "⚡",
+                title: "Smart Tracking",
+                desc: "Accurate health monitoring every day.",
+              },
+            ].map((feature, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8 text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-xl group"
+              >
+                <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
+                </div>
+                <h3 className="font-bold text-lg sm:text-xl text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 mt-2 sm:mt-3 text-sm sm:text-base leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Products */}
+      {/* Products Section */}
       <section className="bg-[#FAF4ED] py-12 lg:py-20" ref={productRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-10 lg:mb-16">
-            <span className="inline-block bg-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full shadow-sm border border-orange-100 text-xs sm:text-sm font-bold text-orange-600 uppercase tracking-widest">
+            <span className="inline-block bg-white px-4 py-2 rounded-full shadow-sm border border-[#C59D5F]/30 text-xs sm:text-sm font-bold text-[#C59D5F] uppercase tracking-widest mb-4">
               ⭐ Premium Collection
             </span>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-5 sm:mt-6 text-gray-900 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight">
               Featured Products
             </h2>
 
-            <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg leading-relaxed">
+            <p className="mt-4 text-gray-600 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg leading-relaxed px-2">
               Explore our premium collection of digital weight scales designed
               for accuracy, durability, and smart health tracking.
             </p>
           </div>
 
           {/* Filters */}
-          <div className="bg-white rounded-2xl shadow-md border border-orange-100 p-5 mb-10">
-            <div className="flex flex-col lg:flex-row gap-4 items-center">
+          <div className="bg-white rounded-2xl shadow-sm border border-[#C59D5F]/20 p-4 sm:p-5 mb-8 sm:mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
               {/* Search */}
-              <div className="w-full lg:flex-1">
+              <div className="w-full sm:col-span-2 lg:col-span-4 relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                  🔍
+                </span>
                 <input
                   type="text"
-                  placeholder="🔍 Search products..."
+                  placeholder="Search products..."
                   value={filters.search}
                   onChange={(e) =>
                     setFilters((prev) => ({
@@ -320,12 +338,12 @@ const Home = ({ className }) => {
                       page: 1,
                     }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition"
+                  className="w-full pl-11 pr-4 py-3.5 sm:py-3 text-sm sm:text-base rounded-xl border border-gray-200 focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all bg-gray-50/50 focus:bg-white"
                 />
               </div>
 
               {/* Category */}
-              <div className="w-full sm:w-auto">
+              <div className="w-full sm:col-span-1 lg:col-span-2 relative">
                 <select
                   value={filters.category}
                   onChange={(e) =>
@@ -335,7 +353,7 @@ const Home = ({ className }) => {
                       page: 1,
                     }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none bg-white"
+                  className="w-full px-4 py-3.5 sm:py-3 text-sm sm:text-base rounded-xl border border-gray-200 focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all bg-white appearance-none cursor-pointer"
                 >
                   <option value="All">All Categories</option>
                   <option value="Personal Scale">Personal Scale</option>
@@ -343,14 +361,16 @@ const Home = ({ className }) => {
                   <option value="Parcel Scale">Parcel Scale</option>
                   <option value="Industrial Scale">Industrial Scale</option>
                 </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+                  ▼
+                </div>
               </div>
 
               {/* Price */}
-              <div className="w-full sm:w-auto">
+              <div className="w-full sm:col-span-1 lg:col-span-2 relative">
                 <select
                   onChange={(e) => {
                     const value = e.target.value;
-
                     let min = "";
                     let max = "";
 
@@ -358,17 +378,14 @@ const Home = ({ className }) => {
                       min = 0;
                       max = 1000;
                     }
-
                     if (value === "1000-3000") {
                       min = 1000;
                       max = 3000;
                     }
-
                     if (value === "3000-5000") {
                       min = 3000;
                       max = 5000;
                     }
-
                     if (value === "5000+") {
                       min = 5000;
                     }
@@ -380,18 +397,21 @@ const Home = ({ className }) => {
                       page: 1,
                     }));
                   }}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none bg-white"
+                  className="w-full px-4 py-3.5 sm:py-3 text-sm sm:text-base rounded-xl border border-gray-200 focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all bg-white appearance-none cursor-pointer"
                 >
                   <option value="All">All Prices</option>
-                  <option value="0-1000">$0 - $1,000</option>
-                  <option value="1000-3000">$1,001 - $3,000</option>
-                  <option value="3000-5000">$3,001 - $5,000</option>
-                  <option value="5000+">$5,000+</option>
+                  <option value="0-1000">₹0 - ₹1,000</option>
+                  <option value="1000-3000">₹1,001 - ₹3,000</option>
+                  <option value="3000-5000">₹3,001 - ₹5,000</option>
+                  <option value="5000+">₹5,000+</option>
                 </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+                  ▼
+                </div>
               </div>
 
               {/* Sort */}
-              <div className="w-full sm:w-auto">
+              <div className="w-full sm:col-span-1 lg:col-span-2 relative">
                 <select
                   value={filters.sort}
                   onChange={(e) =>
@@ -400,7 +420,7 @@ const Home = ({ className }) => {
                       sort: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none bg-white"
+                  className="w-full px-4 py-3.5 sm:py-3 text-sm sm:text-base rounded-xl border border-gray-200 focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all bg-white appearance-none cursor-pointer"
                 >
                   <option value="">Sort By</option>
                   <option value="low">Price: Low → High</option>
@@ -408,47 +428,50 @@ const Home = ({ className }) => {
                   <option value="name">Name: A → Z</option>
                   <option value="latest">Latest</option>
                 </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
+                  ▼
+                </div>
               </div>
 
               {/* Reset Button */}
-              <button
-                onClick={() => {
-                  setFilters({
-                    search: "",
-                    category: "All",
-                    minPrice: "",
-                    maxPrice: "",
-                    sort: "latest",
-                    page: 1,
-                    limit: 9,
-                  });
-                }}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition-all duration-300"
-              >
-                Reset
-              </button>
+              <div className="w-full sm:col-span-1 lg:col-span-2">
+                <button
+                  onClick={() => {
+                    setFilters({
+                      search: "",
+                      category: "All",
+                      minPrice: "",
+                      maxPrice: "",
+                      sort: "latest",
+                      page: 1,
+                      limit: 9,
+                    });
+                  }}
+                  className="w-full px-4 py-3.5 sm:py-3 rounded-xl bg-[#111827] hover:bg-black text-white text-sm sm:text-base font-semibold transition-all duration-300 active:scale-[0.98]"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {products.length > 0 ? (
               products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))
             ) : (
-              <div className="col-span-full py-16 text-center">
-                <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-10 max-w-md mx-auto">
-                  <div className="text-5xl mb-4">📦</div>
-
-                  <h3 className="text-2xl font-bold text-gray-800">
+              <div className="col-span-full py-12 sm:py-16 text-center">
+                <div className="bg-white rounded-3xl shadow-sm border border-[#C59D5F]/20 p-8 sm:p-12 max-w-md mx-auto transition-all">
+                  <div className="text-5xl sm:text-6xl mb-4 sm:mb-6">📦</div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                     No Products Found
                   </h3>
-
-                  <p className="text-gray-500 mt-3">
-                    We couldn't find any products matching your filters.
+                  <p className="text-sm sm:text-base text-gray-500 mb-8">
+                    We couldn't find any products matching your current filters.
+                    Try adjusting your search criteria.
                   </p>
-
                   <button
                     onClick={() => {
                       setSearch("");
@@ -456,9 +479,9 @@ const Home = ({ className }) => {
                       setPrice("All");
                       setSortBy("");
                     }}
-                    className="mt-6 px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition"
+                    className="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl bg-[#C59D5F] hover:bg-[#b88c4d] text-white font-semibold transition-all active:scale-[0.98]"
                   >
-                    Clear Filters
+                    Clear All Filters
                   </button>
                 </div>
               </div>
@@ -519,23 +542,24 @@ const Home = ({ className }) => {
         </div>
       </section>
 
-      <section className="bg-[#FAF4ED]  pb-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="bg-white rounded-3xl border border-[#E8DCCB] shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ">
+      {/* Feature Banner Section */}
+      <section className="bg-[#FAF4ED] pb-16 sm:pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-3xl border border-[#C59D5F]/20 shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden">
             <div className="grid lg:grid-cols-2 items-center">
               {/* Left Content */}
-              <div className="p-12 lg:p-16">
-                <span className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
+              <div className="p-8 sm:p-12 lg:p-16">
+                <span className="inline-block bg-[#FAF4ED] text-[#C59D5F] border border-[#C59D5F]/30 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold tracking-wide uppercase">
                   Smart Health Starts Here
                 </span>
 
-                <h2 className="mt-6 text-5xl font-bold text-gray-900 leading-tight">
+                <h2 className="mt-5 sm:mt-6 text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 leading-[1.15] tracking-tight">
                   Track Every Kilogram
-                  <br />
-                  With Confidence
+                  <br className="hidden sm:block" />
+                  <span className="text-[#C59D5F]"> With Confidence</span>
                 </h2>
 
-                <p className="mt-6 text-lg text-gray-600 leading-8">
+                <p className="mt-5 sm:mt-6 text-base sm:text-lg text-gray-600 leading-relaxed sm:leading-8">
                   Our smart digital weight scales provide accurate body weight,
                   BMI, body fat, muscle mass, and hydration tracking to help you
                   achieve your fitness goals. Monitor your progress with
@@ -543,51 +567,50 @@ const Home = ({ className }) => {
                   whenever you need.
                 </p>
 
-                {/* Features */}
-                <div className="grid grid-cols-2 gap-4 mt-8">
-                  <div className="flex items-center gap-3">
-                    <span className="text-green-600 text-xl">✓</span>
-                    <span className="text-gray-700">99.9% Accurate</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="text-green-600 text-xl">✓</span>
-                    <span className="text-gray-700">BMI Analysis</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="text-green-600 text-xl">✓</span>
-                    <span className="text-gray-700">Body Fat Tracking</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="text-green-600 text-xl">✓</span>
-                    <span className="text-gray-700">2-Year Warranty</span>
-                  </div>
+                {/* Features List */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 sm:mt-10">
+                  {[
+                    "99.9% Accurate",
+                    "BMI Analysis",
+                    "Body Fat Tracking",
+                    "2-Year Warranty",
+                  ].map((feat, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#C59D5F]/20 text-[#C59D5F] text-xs font-bold">
+                        ✓
+                      </div>
+                      <span className="text-gray-700 font-medium text-sm sm:text-base">
+                        {feat}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Buttons */}
-                <div className="flex gap-4 mt-10">
-                  <button className="bg-black text-white px-8 py-4 rounded-xl font-semibold hover:bg-gray-900 transition">
+                <div className="flex flex-col sm:flex-row gap-4 mt-10 sm:mt-12">
+                  <button className="w-full sm:w-auto bg-[#111827] text-white px-8 py-4 rounded-xl font-semibold hover:bg-black transition-all active:scale-[0.98] shadow-md">
                     Shop Smart Scales
                   </button>
-
-                  <button className="border-2 border-black px-8 py-4 rounded-xl font-semibold hover:bg-black hover:text-white transition">
+                  <button className="w-full sm:w-auto border-2 border-[#111827] text-[#111827] px-8 py-4 rounded-xl font-semibold hover:bg-[#111827] hover:text-white transition-all active:scale-[0.98]">
                     Learn More
                   </button>
                 </div>
               </div>
 
-              {/* Right Side */}
-              <div className="hidden lg:flex justify-center items-center bg-[#F8F3EC] h-full p-10">
-                <div className="text-center">
-                  <div className="text-7xl mb-6">⚖️</div>
-
-                  <h3 className="text-3xl font-bold text-gray-900">
+              {/* Right Side Image/Graphic */}
+              <div className="hidden lg:flex justify-center items-center bg-[#FAF4ED]/50 h-full p-12 border-l border-[#C59D5F]/10 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#C59D5F]/5 to-transparent"></div>
+                <div className="text-center relative z-10">
+                  <div
+                    className="text-8xl mb-8 drop-shadow-xl animate-bounce"
+                    style={{ animationDuration: "3s" }}
+                  >
+                    ⚖️
+                  </div>
+                  <h3 className="text-3xl font-extrabold text-gray-900 tracking-tight">
                     Live Health Tracking
                   </h3>
-
-                  <p className="mt-4 text-gray-600 max-w-sm">
+                  <p className="mt-4 text-gray-600 max-w-sm mx-auto text-lg leading-relaxed">
                     Measure your weight, monitor your health, and stay motivated
                     with advanced digital technology.
                   </p>
@@ -599,28 +622,31 @@ const Home = ({ className }) => {
       </section>
 
       {/* Appointment Section */}
-      <section className="bg-[#FAF4ED] py-26" ref={appointmentRef}>
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold text-gray-900">
+      <section
+        className="bg-[#FAF4ED] pb-20 sm:pb-24 pt-8"
+        ref={appointmentRef}
+      >
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          {/* Header */}
+          <div className="text-center mb-10 sm:mb-12">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
               Book Appointment
             </h1>
-
-            <p className="mt-4 text-gray-600">
-              Choose your appointment type and schedule a convenient time.
+            <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 max-w-xl mx-auto">
+              Choose your appointment type and schedule a convenient time with
+              our expert team.
             </p>
           </div>
 
-          <div className="bg-white rounded-3xl shadow-xl border border-[#E8DCCB] p-10">
-            <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-[#C59D5F]/20 p-6 sm:p-10 lg:p-12">
+            <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
               {/* Appointment Type */}
-
               <div>
-                <label className="block text-lg font-semibold text-gray-800 mb-5">
-                  Select One Type From 4
+                <label className="block text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6">
+                  1. Select Service Type
                 </label>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   {[
                     {
                       value: "Home Repair",
@@ -645,10 +671,10 @@ const Home = ({ className }) => {
                   ].map((item) => (
                     <label
                       key={item.value}
-                      className={`cursor-pointer rounded-2xl border-2 p-5 transition-all duration-300 ${
+                      className={`cursor-pointer rounded-2xl border-2 p-5 sm:p-6 transition-all duration-300 relative overflow-hidden ${
                         formData.type === item.value
-                          ? "border-[#C59D5F] bg-[#FFF8EE] shadow-lg"
-                          : "border-gray-200 bg-white hover:border-[#C59D5F] hover:shadow-md"
+                          ? "border-[#C59D5F] bg-[#FAF4ED] shadow-md"
+                          : "border-gray-100 bg-white hover:border-[#C59D5F]/50 hover:bg-gray-50"
                       }`}
                     >
                       <input
@@ -657,85 +683,84 @@ const Home = ({ className }) => {
                         value={item.value}
                         checked={formData.type === item.value}
                         onChange={handleChange}
-                        className="hidden"
+                        className="sr-only"
+                        aria-label={item.title}
                       />
 
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      {formData.type === item.value && (
+                        <div className="absolute top-4 right-4 text-[#C59D5F]">
+                          <svg
+                            className="w-6 h-6"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            ></path>
+                          </svg>
+                        </div>
+                      )}
+
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 pr-8">
                         {item.title}
                       </h3>
-
-                      <p className="text-sm text-gray-600 mt-2 leading-6">
+                      <p className="text-sm text-gray-600 mt-2 leading-relaxed">
                         {item.desc}
                       </p>
                     </label>
                   ))}
-                  {errors.type?._errors && (
-                    <p className="mt-2 text-sm text-red-500">
-                      {errors.type._errors[0]}
-                    </p>
-                  )}
                 </div>
+                {errors.type?._errors && (
+                  <p className="mt-3 text-sm font-medium text-red-500 animate-pulse">
+                    * {errors.type._errors[0]}
+                  </p>
+                )}
               </div>
 
+              <hr className="border-gray-100" />
+
               {/* Date & Time */}
+              <div>
+                <label className="block text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6">
+                  2. Choose Date & Time
+                </label>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Appointment Date
-                  </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Appointment Date
+                    </label>
+                    <input
+                      type="date"
+                      name="date"
+                      min={today}
+                      value={formData.date}
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-5 py-3.5 sm:py-4 text-sm sm:text-base outline-none transition-all duration-300 focus:bg-white focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 cursor-pointer"
+                      required
+                    />
+                    {errors.date?._errors && (
+                      <span className="block mt-2 text-red-500 text-sm font-medium">
+                        * {errors.date._errors[0]}
+                      </span>
+                    )}
+                  </div>
 
-                  <input
-                    type="date"
-                    name="date"
-                    min={today}
-                    value={formData.date}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl px-5 py-4 focus:border-[#C59D5F] outline-none"
-                    required
-                  />
-                </div>
-                {errors.date?._errors && (
-                  <span className="text-red-500 text-sm">
-                    {errors.date._errors[0]}
-                  </span>
-                )}
-
-                <div>
                   <div className="relative group">
-                    <label className="block font-semibold mb-2 text-gray-800">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Preferred Time
                     </label>
-
                     <select
                       name="time"
                       value={formData.time}
                       onChange={handleChange}
-                      className="
-                        w-full
-                        appearance-none
-                        rounded-xl
-                        border
-                        border-gray-300
-                        bg-white
-                        px-5
-                        py-4
-                        pr-12
-                        text-gray-700
-                        transition-all
-                        duration-300
-                        cursor-pointer
-                        shadow-sm
-                        hover:border-[#C59D5F]
-                        hover:shadow-md
-                        focus:outline-none
-                        focus:ring-4
-                        focus:ring-[#D4B483]/30
-                        focus:border-[#C59D5F]
-                      "
+                      className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-5 py-3.5 sm:py-4 pr-12 text-sm sm:text-base outline-none transition-all duration-300 focus:bg-white focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 cursor-pointer appearance-none"
                     >
-                      <option value="">Select Time</option>
-
+                      <option value="" disabled hidden>
+                        Select a time
+                      </option>
                       <option value="09:00 AM">09:00 AM</option>
                       <option value="10:00 AM">10:00 AM</option>
                       <option value="11:00 AM">11:00 AM</option>
@@ -748,115 +773,123 @@ const Home = ({ className }) => {
                     </select>
 
                     {/* Custom Arrow */}
-                    <div className="pointer-events-none absolute right-5 top-[58px] -translate-y-1/2 text-gray-500 transition-transform duration-300 group-hover:rotate-180">
+                    <div className="pointer-events-none absolute right-5 top-[42px] sm:top-[46px] text-gray-400 transition-transform duration-300 group-hover:text-[#C59D5F] text-xs">
                       ▼
                     </div>
-                  </div>
 
-                  {errors.time?._errors && (
-                    <span className="text-red-500 text-sm">
-                      {errors.time._errors[0]}
-                    </span>
-                  )}
+                    {errors.time?._errors && (
+                      <span className="block mt-2 text-red-500 text-sm font-medium">
+                        * {errors.time._errors[0]}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
+              <hr className="border-gray-100" />
+
               {/* Reason */}
-
               <div>
-                <label className="block font-semibold mb-2">
-                  Reason / Problem Description
+                <label className="block text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6">
+                  3. Reason / Problem Description
                 </label>
-
                 <textarea
-                  rows={5}
+                  rows={4}
                   name="reason"
                   value={formData.reason}
                   onChange={handleChange}
-                  placeholder="Describe your issue..."
-                  className="w-full border rounded-xl px-5 py-4 resize-none focus:border-[#C59D5F] outline-none"
+                  placeholder="Please describe your issue or reason for the appointment in detail..."
+                  className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-5 py-4 text-sm sm:text-base outline-none transition-all duration-300 focus:bg-white focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 resize-y min-h-[120px]"
                 />
                 {errors.reason?._errors && (
-                  <span className="text-red-500 text-sm">
-                    {errors.reason._errors[0]}
+                  <span className="block mt-2 text-red-500 text-sm font-medium">
+                    * {errors.reason._errors[0]}
                   </span>
                 )}
               </div>
 
-              {/* Home Address */}
-
+              {/* Conditional Home Address */}
               {formData.type === "Home Repair" && (
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-semibold">Service Address</h2>
+                <div className="space-y-5 sm:space-y-6 bg-gray-50 p-5 sm:p-8 rounded-2xl border border-gray-100 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                    Service Address
+                  </h2>
 
-                  <input
-                    type="text"
-                    name="address"
-                    placeholder="House No, Street"
-                    value={formData.address.address}
-                    onChange={handleAddressChange}
-                    className="w-full border rounded-xl px-5 py-4"
-                  />
-
-                  {errors.address?.address?._errors && (
-                    <span className="text-red-500 text-sm">
-                      {errors.address.address._errors[0]}
-                    </span>
-                  )}
-
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div>
                     <input
                       type="text"
-                      name="city"
-                      placeholder="City"
-                      value={formData.address.city}
+                      name="address"
+                      placeholder="House No, Street, Landmark"
+                      value={formData.address.address}
                       onChange={handleAddressChange}
-                      className="border rounded-xl px-5 py-4"
+                      className="w-full bg-white border border-gray-200 rounded-xl px-5 py-3.5 sm:py-4 text-sm sm:text-base focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all"
                     />
-                    {errors.address?.city?._errors && (
-                      <span className="text-red-500 text-sm">
-                        {errors.address.city._errors[0]}
-                      </span>
-                    )}
-
-                    <input
-                      type="text"
-                      name="village"
-                      placeholder="Village"
-                      value={formData.address.village}
-                      onChange={handleAddressChange}
-                      className="border rounded-xl px-5 py-4"
-                    />
-                    {errors.address?.village?._errors && (
-                      <span className="text-red-500 text-sm">
-                        {errors.address.village._errors[0]}
+                    {errors.address?.address?._errors && (
+                      <span className="block mt-2 text-red-500 text-sm font-medium">
+                        * {errors.address.address._errors[0]}
                       </span>
                     )}
                   </div>
 
-                  <input
-                    type="text"
-                    name="pincode"
-                    placeholder="Pincode"
-                    value={formData.address.pincode}
-                    onChange={handleAddressChange}
-                    className="w-full border rounded-xl px-5 py-4"
-                  />
-                  {errors.address?.pincode?._errors && (
-                    <span className="text-red-500 text-sm">
-                      {errors.address.pincode._errors[0]}
-                    </span>
-                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                    <div>
+                      <input
+                        type="text"
+                        name="city"
+                        placeholder="City"
+                        value={formData.address.city}
+                        onChange={handleAddressChange}
+                        className="w-full bg-white border border-gray-200 rounded-xl px-5 py-3.5 sm:py-4 text-sm sm:text-base focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all"
+                      />
+                      {errors.address?.city?._errors && (
+                        <span className="block mt-2 text-red-500 text-sm font-medium">
+                          * {errors.address.city._errors[0]}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <input
+                        type="text"
+                        name="village"
+                        placeholder="Village / Area"
+                        value={formData.address.village}
+                        onChange={handleAddressChange}
+                        className="w-full bg-white border border-gray-200 rounded-xl px-5 py-3.5 sm:py-4 text-sm sm:text-base focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all"
+                      />
+                      {errors.address?.village?._errors && (
+                        <span className="block mt-2 text-red-500 text-sm font-medium">
+                          * {errors.address.village._errors[0]}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <input
+                      type="text"
+                      name="pincode"
+                      placeholder="6-digit Pincode"
+                      value={formData.address.pincode}
+                      onChange={handleAddressChange}
+                      maxLength={6}
+                      className="w-full sm:w-1/2 bg-white border border-gray-200 rounded-xl px-5 py-3.5 sm:py-4 text-sm sm:text-base focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 outline-none transition-all"
+                    />
+                    {errors.address?.pincode?._errors && (
+                      <span className="block mt-2 text-red-500 text-sm font-medium">
+                        * {errors.address.pincode._errors[0]}
+                      </span>
+                    )}
+                  </div>
                 </div>
               )}
 
               {/* Submit */}
-
               <button
                 type="submit"
-                className="w-full bg-[#111827] hover:bg-black text-white py-4 rounded-xl font-semibold transition"
+                className="w-full bg-[#111827] hover:bg-black text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-bold transition-all duration-300 shadow-lg hover:shadow-xl active:scale-[0.98] mt-4"
               >
-                Book Appointment
+                Confirm Appointment
               </button>
             </form>
           </div>

@@ -34,6 +34,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Backend API Is Working",
+  });
+});
+
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);

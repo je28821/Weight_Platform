@@ -38,7 +38,7 @@
   •
   <a href="https://github.com/je28821/Weight_Platform">💻 Source Code</a>
   •
-  <a href="https://weight-platform-backend.onrender.com">⚙️ Backend API</a>
+  <a href="https://weight-platform-backend.onrender.com/health">⚙️ Backend API</a>
 </p>
 
 ---

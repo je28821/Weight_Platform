@@ -34,10 +34,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Backend API Is Working",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
   });
 });
 

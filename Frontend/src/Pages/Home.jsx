@@ -474,10 +474,15 @@ const Home = ({ className }) => {
                   </p>
                   <button
                     onClick={() => {
-                      setSearch("");
-                      setCategory("All");
-                      setPrice("All");
-                      setSortBy("");
+                      setFilters({
+                        search: "",
+                        category: "All",
+                        minPrice: "",
+                        maxPrice: "",
+                        sort: "latest",
+                        page: 1,
+                        limit: 9,
+                      });
                     }}
                     className="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl bg-[#C59D5F] hover:bg-[#b88c4d] text-white font-semibold transition-all active:scale-[0.98]"
                   >

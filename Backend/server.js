@@ -35,7 +35,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
 app.get("/health", (req, res) => {
-  console.log("Health Cheack Done✅");
   res.status(200).json({
     success: true,
     message: "Server is running",

@@ -88,6 +88,13 @@ const Home = ({ className }) => {
     }));
   };
 
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
+  };
+
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
 
@@ -124,7 +131,7 @@ const Home = ({ className }) => {
         },
         controllerRef.current.signal,
       );
-
+      console.log(res);
       setProducts(res.products);
       setTotalPages(res.totalpages);
     } catch (err) {
@@ -186,8 +193,6 @@ const Home = ({ className }) => {
         className="relative min-h-[100svh] flex items-center overflow-hidden bg-cover bg-[center_top_20%] sm:bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${Hero})` }}
       >
-        {/* Mobile Overlay: A subtle dark tint instead of a heavy white gradient. 
-      Desktop Overlay: Fades left to right naturally. */}
         <div className="absolute inset-0 bg-black/20 sm:bg-gradient-to-r sm:from-[#FAF4ED] sm:via-[#FAF4ED]/80 sm:to-transparent" />
 
         {/* Content */}
@@ -197,10 +202,6 @@ const Home = ({ className }) => {
           animate="show"
           className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20"
         >
-          {/* 
-      Removed the blurry white card wrapper completely. 
-      The content now sits directly on the background fully transparent.
-    */}
           <div className="max-w-2xl mt-12 sm:mt-0">
             <motion.div
               variants={item}
@@ -497,49 +498,41 @@ const Home = ({ className }) => {
 
       {/* Pagination */}
       <section className="bg-[#FAF4ED] pb-12">
-        <div className="flex justify-center">
-          <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3">
+        <div className="flex justify-center px-4">
+          <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 flex-wrap justify-center">
+            {/* Previous */}
             <button
               disabled={filters.page === 1}
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  page: prev.page - 1,
-                }))
-              }
-              className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
+              onClick={() => handlePageChange(filters.page - 1)}
+              className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               ← Previous
             </button>
 
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index}
-                onClick={() =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    page: index + 1,
-                  }))
-                }
-                className={`w-12 h-12 rounded-xl font-bold transition ${
-                  filters.page === index + 1
-                    ? "bg-black text-white scale-110 shadow-lg"
-                    : "border hover:bg-[#FAF4ED]"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {/* Page Numbers */}
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNumber = index + 1;
 
+              return (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                  className={`w-12 h-12 rounded-xl font-bold transition ${
+                    filters.page === pageNumber
+                      ? "bg-black text-white scale-110 shadow-lg"
+                      : "border hover:bg-[#FAF4ED]"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+
+            {/* Next */}
             <button
               disabled={filters.page === totalPages}
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  page: prev.page + 1,
-                }))
-              }
-              className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
+              onClick={() => handlePageChange(filters.page + 1)}
+              className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Next →
             </button>

@@ -10,6 +10,7 @@ module.exports.homeController = async (req, res) => {
       message: "Products fetched successfully",
       products: result.products,
       totalpages: result.totalPages,
+      page: result.currentPage,
     });
   } catch (error) {
     return res.status(400).json({

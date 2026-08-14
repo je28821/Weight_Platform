@@ -145,9 +145,16 @@ export default function Product() {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
+  };
+
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [filters.page]);
   return (
     <div className="min-h-screen bg-[#FAF4ED] p-8">
       <div className="max-w-7xl mx-auto px-6">
@@ -624,50 +631,43 @@ export default function Product() {
           </div>
         )}
 
-        <section className="bg-[#FAF4ED] pb-12 py-10">
-          <div className="flex justify-center">
-            <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3">
+        {/* Pagination */}
+        <section className="bg-[#FAF4ED] pb-12">
+          <div className="flex justify-center px-4">
+            <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 flex-wrap justify-center">
+              {/* Previous */}
               <button
                 disabled={filters.page === 1}
-                onClick={() =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    page: prev.page - 1,
-                  }))
-                }
-                className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
+                onClick={() => handlePageChange(filters.page - 1)}
+                className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 ← Previous
               </button>
 
-              {[...Array(totalPages)].map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      page: index + 1,
-                    }))
-                  }
-                  className={`w-12 h-12 rounded-xl font-bold transition ${
-                    filters.page === index + 1
-                      ? "bg-black text-white scale-110 shadow-lg"
-                      : "border hover:bg-[#FAF4ED]"
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
+              {/* Page Numbers */}
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNumber = index + 1;
 
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() => handlePageChange(pageNumber)}
+                    className={`w-12 h-12 rounded-xl font-bold transition ${
+                      filters.page === pageNumber
+                        ? "bg-black text-white scale-110 shadow-lg"
+                        : "border hover:bg-[#FAF4ED]"
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              {/* Next */}
               <button
                 disabled={filters.page === totalPages}
-                onClick={() =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    page: prev.page + 1,
-                  }))
-                }
-                className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40"
+                onClick={() => handlePageChange(filters.page + 1)}
+                className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Next →
               </button>

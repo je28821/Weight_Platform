@@ -12,15 +12,25 @@ module.exports.homeService = async (query) => {
     limit = 9,
   } = query;
 
-  page = Number(page);
-  limit = Number(limit);
+  page = Math.max(1, Number(page));
+  limit = Math.max(1, Number(limit));
 
   const filter = {};
 
-  if (search) {
+  if (search?.trim()) {
     filter.$or = [
-      { name: { $regex: search, $options: "i" } },
-      { description: { $regex: search, $options: "i" } },
+      {
+        name: {
+          $regex: search.trim(),
+          $options: "i",
+        },
+      },
+      {
+        description: {
+          $regex: search.trim(),
+          $options: "i",
+        },
+      },
     ];
   }
 
@@ -31,47 +41,53 @@ module.exports.homeService = async (query) => {
   if (minPrice || maxPrice) {
     filter.price = {};
 
-    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (minPrice) {
+      filter.price.$gte = Number(minPrice);
+    }
 
-    if (maxPrice) filter.price.$lte = Number(maxPrice);
+    if (maxPrice) {
+      filter.price.$lte = Number(maxPrice);
+    }
   }
+
   const sortOption = {};
 
   switch (sort) {
     case "low":
       sortOption.price = 1;
+      sortOption._id = 1;
       break;
 
     case "high":
       sortOption.price = -1;
+      sortOption._id = 1;
       break;
 
     case "name":
       sortOption.name = 1;
+      sortOption._id = 1;
       break;
 
     case "latest":
-      sortOption.createdAt = -1;
-      break;
-
     default:
       sortOption.createdAt = -1;
+      sortOption._id = -1;
+      break;
   }
-
-  const products = await Product.find(filter)
-    .sort(sortOption)
-    .skip((page - 1) * limit)
-    .limit(limit);
 
   const total = await Product.countDocuments(filter);
 
+  const skip = (page - 1) * limit;
+
+  const products = await Product.find(filter)
+    .sort(sortOption)
+    .skip(skip)
+    .limit(limit);
+
   return {
     products,
-
     totalProducts: total,
-
     totalPages: Math.ceil(total / limit),
-
     currentPage: page,
   };
 };

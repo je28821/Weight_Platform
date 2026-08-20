@@ -20,7 +20,7 @@ export default function Product() {
   const [errors, setErrors] = useState({});
   const [filters, setFilters] = useState({
     page: 1,
-    limit: 9,
+    limit: 6,
   });
   const [totalPages, setTotalPages] = useState();
   const [openEdit, setOpenEdit] = useState(false);

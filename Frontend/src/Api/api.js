@@ -38,7 +38,6 @@ export const logout = async () => {
 };
 
 export const homedata = async (params) => {
-  console.log(params);
   const response = await api.get(`/api/products`, { params });
   return response.data;
 };

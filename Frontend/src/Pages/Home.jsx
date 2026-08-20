@@ -18,7 +18,7 @@ const Home = ({ className }) => {
     maxPrice: "",
     sort: "latest",
     page: 1,
-    limit: 9,
+    limit: 6,
   });
   const [debouncedSearch, setDebouncedSearch] = useState(filters.search);
   const [formData, setFormData] = useState({
@@ -131,7 +131,6 @@ const Home = ({ className }) => {
         },
         controllerRef.current.signal,
       );
-      console.log(res);
       setProducts(res.products);
       setTotalPages(res.totalpages);
     } catch (err) {
@@ -259,7 +258,7 @@ const Home = ({ className }) => {
       {/* Features Section */}
       <section className="bg-[#FAF4ED] py-8 sm:py-12 relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {[
               {
                 icon: "🚚",
@@ -322,7 +321,7 @@ const Home = ({ className }) => {
 
           {/* Filters */}
           <div className="bg-white rounded-2xl shadow-sm border border-[#C59D5F]/20 p-4 sm:p-5 mb-8 sm:mb-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-center">
               {/* Search */}
               <div className="w-full sm:col-span-2 lg:col-span-4 relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -445,7 +444,7 @@ const Home = ({ className }) => {
                       maxPrice: "",
                       sort: "latest",
                       page: 1,
-                      limit: 9,
+                      limit: 6,
                     });
                   }}
                   className="w-full px-4 py-3.5 sm:py-3 rounded-xl bg-[#111827] hover:bg-black text-white text-sm sm:text-base font-semibold transition-all duration-300 active:scale-[0.98]"
@@ -457,7 +456,7 @@ const Home = ({ className }) => {
           </div>
 
           {/* Product Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {products.length > 0 ? (
               products.map((product) => (
                 <ProductCard key={product._id} product={product} />
@@ -482,7 +481,7 @@ const Home = ({ className }) => {
                         maxPrice: "",
                         sort: "latest",
                         page: 1,
-                        limit: 9,
+                        limit: 6,
                       });
                     }}
                     className="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-xl bg-[#C59D5F] hover:bg-[#b88c4d] text-white font-semibold transition-all active:scale-[0.98]"
@@ -497,16 +496,17 @@ const Home = ({ className }) => {
       </section>
 
       {/* Pagination */}
-      <section className="bg-[#FAF4ED] pb-12">
-        <div className="flex justify-center px-4">
-          <div className="bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 flex-wrap justify-center">
+      <section className="bg-[#FAF4ED] pb-12 w-full">
+        <div className="flex justify-center px-2 sm:px-4">
+          {/* Removed flex-wrap, reduced gap and padding on mobile */}
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-5 sm:p-4 flex items-center gap-1.5 sm:gap-3 justify-center max-w-full overflow-x-auto no-scrollbar">
             {/* Previous */}
             <button
               disabled={filters.page === 1}
               onClick={() => handlePageChange(filters.page - 1)}
-              className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-base rounded-lg sm:rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap flex-shrink-0"
             >
-              ← Previous
+              ← Prev<span className="hidden sm:inline">ious</span>
             </button>
 
             {/* Page Numbers */}
@@ -517,9 +517,9 @@ const Home = ({ className }) => {
                 <button
                   key={pageNumber}
                   onClick={() => handlePageChange(pageNumber)}
-                  className={`w-12 h-12 rounded-xl font-bold transition ${
+                  className={`flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12 text-sm sm:text-base rounded-lg sm:rounded-xl font-bold transition flex-shrink-0 ${
                     filters.page === pageNumber
-                      ? "bg-black text-white scale-110 shadow-lg"
+                      ? "bg-black text-white sm:scale-110 scale-105 shadow-md sm:shadow-lg"
                       : "border hover:bg-[#FAF4ED]"
                   }`}
                 >
@@ -532,9 +532,9 @@ const Home = ({ className }) => {
             <button
               disabled={filters.page === totalPages}
               onClick={() => handlePageChange(filters.page + 1)}
-              className="px-6 py-3 rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-base rounded-lg sm:rounded-xl border hover:bg-black hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap flex-shrink-0"
             >
-              Next →
+              Next<span className="hidden sm:inline"> →</span>
             </button>
           </div>
         </div>
@@ -644,7 +644,7 @@ const Home = ({ className }) => {
                   1. Select Service Type
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-5">
                   {[
                     {
                       value: "Home Repair",
@@ -725,7 +725,7 @@ const Home = ({ className }) => {
                   2. Choose Date & Time
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-5 sm:gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Appointment Date
@@ -757,7 +757,7 @@ const Home = ({ className }) => {
                       className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl px-5 py-3.5 sm:py-4 pr-12 text-sm sm:text-base outline-none transition-all duration-300 focus:bg-white focus:border-[#C59D5F] focus:ring-2 focus:ring-[#C59D5F]/20 cursor-pointer appearance-none"
                     >
                       <option value="" disabled hidden>
-                        Select a time
+                        Time !?
                       </option>
                       <option value="09:00 AM">09:00 AM</option>
                       <option value="10:00 AM">10:00 AM</option>

@@ -9,7 +9,7 @@ module.exports.homeService = async (query) => {
     maxPrice,
     sort,
     page = 1,
-    limit = 9,
+    limit = 6,
   } = query;
 
   page = Math.max(1, Number(page));

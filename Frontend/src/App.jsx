@@ -8,7 +8,7 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import CartPage from "./Pages/CartPage";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchCart } from "./Redux/Features/Cart/cartapi";
@@ -27,6 +27,16 @@ import AdminRoute from "./Layouts/AdminRoute";
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("hasVisited");
+
+    if (!hasVisited) {
+      localStorage.setItem("hasVisited", "true");
+      navigate("/register", { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     dispatch(fetchCart());
@@ -46,20 +56,21 @@ function App() {
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path="/orderform" element={<OrderForm />} />
             </Route>
+
             <Route element={<AdminRoute />}>
               <Route path="/product" element={<Product />} />
               <Route path="/addproduct" element={<ProductForm />} />
               <Route path="/dashboard" element={<AdminDashboard />} />
               <Route path="/appointment" element={<AppointmentRequests />} />
             </Route>
+
             <Route path="*" element={<Home />} />
           </Route>
 
-          <Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
+
         <ToastContainer position="top-right" autoClose={2500} theme="colored" />
       </GoogleOAuthProvider>
     </>

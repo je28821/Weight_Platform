@@ -111,98 +111,105 @@ export default function UserDashboard() {
         {/* Orders */}
 
         {tab === "orders" && (
-          <div className="space-y-6 max-w-5xl mx-auto">
+          <div className="space-y-4 sm:space-y-6 max-w-5xl mx-auto">
             {orders.map((order) => (
               <div
                 key={order._id}
-                className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
+                className="group bg-white rounded-2xl sm:rounded-3xl border border-[#E8DCCB] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
               >
-                {/* --- Order Header --- */}
-                <div className="bg-gray-50/50 p-6 border-b border-gray-100">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    {/* Order Meta */}
-                    <div className="flex items-start gap-4">
-                      <div className="bg-white p-3 rounded-full border border-gray-200 shadow-sm hidden sm:block">
-                        <Package className="w-6 h-6 text-gray-400" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-500 mb-1">
-                          Order #{order._id.slice(-8).toUpperCase()}
-                        </p>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Calendar className="w-4 h-4" />
-                          <span>
-                            {new Date(order.createdAt).toLocaleDateString(
-                              "en-IN",
-                              {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              },
-                            )}
+                {/* ================= HEADER ================= */}
+                <div className="bg-gradient-to-r from-[#FFF8EF] via-[#FAF4ED] to-[#FFF8EF] px-4 sm:px-6 py-4 sm:py-5 border-b border-[#E8DCCB]">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+                    {/* Order Info & Badges */}
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between sm:block gap-2">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="bg-white p-2 sm:p-2.5 rounded-lg sm:rounded-xl border border-[#E8DCCB] shadow-sm hidden sm:flex items-center justify-center text-[#8B5E34]">
+                            <Package className="w-4 h-4 sm:w-5 sm:h-5" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-0.5 sm:mb-1">
+                              Order ID
+                            </p>
+                            <h2 className="text-sm sm:text-lg font-bold text-gray-800">
+                              #{order._id.slice(-8).toUpperCase()}
+                            </h2>
+                          </div>
+                        </div>
+
+                        {/* Mobile-only status pill */}
+                        <div className="sm:hidden shrink-0">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border shadow-sm ${getStatusColor(
+                              order.orderStatus,
+                            )}`}
+                          >
+                            {order.orderStatus}
                           </span>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Order Summary & Status */}
-                    <div className="flex flex-wrap items-center gap-6 md:gap-8 bg-white md:bg-transparent p-4 md:p-0 rounded-xl border md:border-none border-gray-100">
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 mb-1 flex items-center gap-1">
-                          <CreditCard className="w-3 h-3" /> Payment
-                        </p>
-                        <p className="font-semibold text-gray-900 text-sm">
+                      {/* Date & Payment Pills */}
+                      <div className="flex flex-wrap items-center gap-2 mt-3 sm:mt-4">
+                        <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-gray-100 text-gray-500 text-[10px] sm:text-xs font-semibold shadow-sm">
+                          <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          {new Date(order.createdAt).toLocaleDateString(
+                            "en-IN",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )}
+                        </span>
+                        <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F4E8D6] border border-[#E8DCCB] text-[#8B5E34] text-[10px] sm:text-xs font-bold shadow-sm">
+                          <CreditCard className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                           {order.payment.method}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-xs font-medium text-gray-500 mb-1">
-                          Total
-                        </p>
-                        <p className="font-bold text-gray-900 text-sm">
-                          ₹{order.totalAmount.toLocaleString("en-IN")}
-                        </p>
-                      </div>
-
-                      <div className="md:ml-4">
-                        <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ring-1 ring-inset ${getStatusColor(
-                            order.orderStatus,
-                          )}`}
-                        >
-                          {order.orderStatus}
                         </span>
                       </div>
+                    </div>
+
+                    {/* Desktop-only Status */}
+                    <div className="hidden sm:flex flex-col items-end shrink-0">
+                      <p className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-400 font-bold mb-1.5">
+                        Status
+                      </p>
+                      <span
+                        className={`inline-flex items-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold border shadow-sm ${getStatusColor(
+                          order.orderStatus,
+                        )}`}
+                      >
+                        {order.orderStatus}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* --- Order Products --- */}
-                <div className="p-6">
-                  <div className="space-y-4">
+                {/* ================= BODY (PRODUCTS) ================= */}
+                <div className="p-4 sm:p-6 flex-grow">
+                  <div className="space-y-3 sm:space-y-4">
                     {order.products.map((item, index) => (
                       <React.Fragment key={item.product._id}>
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 group cursor-pointer">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group/item cursor-pointer">
                           {/* Product Info */}
-                          <div className="flex items-center gap-4">
-                            <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+                          <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="relative h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-[#FAF4ED]/30 p-1.5 sm:p-2">
                               <img
                                 src={item.product.image}
                                 alt={item.product.name}
-                                className="h-full w-full object-cover object-center"
+                                className="h-full w-full object-contain mix-blend-multiply transition-transform duration-300 group-hover/item:scale-110"
                               />
                             </div>
                             <div className="flex flex-col">
-                              <h3 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                              <h3 className="text-xs sm:text-base font-bold text-gray-800 group-hover/item:text-[#8B5E34] transition-colors line-clamp-1">
                                 {item.product.name}
                               </h3>
-                              <p className="text-sm text-gray-500 mt-0.5">
+                              <p className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mt-0.5 sm:mt-1">
                                 {item.product.category}
                               </p>
-                              <p className="text-sm font-medium text-gray-600 mt-2">
+                              <p className="text-xs sm:text-sm font-bold text-gray-600 mt-1 sm:mt-2">
                                 ₹{item.price.toLocaleString("en-IN")}{" "}
-                                <span className="text-gray-400 font-normal mx-1">
+                                <span className="text-gray-300 font-normal mx-1">
                                   ×
                                 </span>{" "}
                                 {item.quantity}
@@ -211,39 +218,40 @@ export default function UserDashboard() {
                           </div>
 
                           {/* Item Total */}
-                          <div className="flex items-center justify-between sm:justify-end sm:w-1/3 border-t sm:border-none pt-4 sm:pt-0">
-                            <div className="text-left sm:text-right">
-                              <p className="text-xs font-medium text-gray-500 mb-1 sm:hidden">
-                                Item Total
-                              </p>
-                              <h3 className="text-base font-bold text-gray-900">
-                                ₹
-                                {(item.price * item.quantity).toLocaleString(
-                                  "en-IN",
-                                )}
-                              </h3>
-                            </div>
+                          <div className="flex items-center justify-between sm:justify-end border-t sm:border-none pt-2 sm:pt-0 mt-2 sm:mt-0">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider sm:hidden">
+                              Item Total
+                            </p>
+                            <h3 className="text-sm sm:text-base font-bold text-gray-900">
+                              ₹
+                              {(item.price * item.quantity).toLocaleString(
+                                "en-IN",
+                              )}
+                            </h3>
                           </div>
                         </div>
 
                         {/* Divider between items */}
                         {index !== order.products.length - 1 && (
-                          <div className="h-px w-full bg-gray-100 my-4" />
+                          <div className="h-px w-full bg-[#E8DCCB]/40 my-1 sm:my-2" />
                         )}
                       </React.Fragment>
                     ))}
                   </div>
 
-                  {/* --- Optional Footer / Actions --- */}
-                  <div className="mt-6 pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                      <ReceiptText className="w-4 h-4" />
-                      Invoice
-                    </button>
-                    <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors">
-                      Track Order
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                  {/* ================= FOOTER / ACTIONS ================= */}
+                  <div className="mt-4 sm:mt-6 border-t border-[#E8DCCB]/60 pt-4 sm:pt-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      {/* Total Amount */}
+                      <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-4">
+                        <span className="text-[11px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider">
+                          Order Total
+                        </span>
+                        <span className="text-lg sm:text-xl font-black text-gray-900">
+                          ₹{order.totalAmount.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -253,64 +261,79 @@ export default function UserDashboard() {
 
         {/* Appointment */}
         {tab === "appointments" && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {appointments.length > 0 ? (
               appointments.map((appointment) => (
                 <div
                   key={appointment._id}
-                  className="bg-white rounded-3xl border border-[#E8DCCB] shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                  className="group bg-white rounded-2xl sm:rounded-3xl border border-[#E8DCCB] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
                 >
-                  {/* Header */}
-                  <div className="bg-gradient-to-r from-[#FFF8EF] via-[#FAF4ED] to-[#FFF8EF] px-6 py-5 border-b border-[#E8DCCB]">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                      <div>
-                        <h2 className="text-2xl font-bold text-gray-800">
-                          {appointment.reason}
-                        </h2>
+                  {/* ================= HEADER ================= */}
+                  <div className="bg-gradient-to-r from-[#FFF8EF] via-[#FAF4ED] to-[#FFF8EF] px-4 sm:px-6 py-4 sm:py-5 border-b border-[#E8DCCB]">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+                      {/* Title & Badges */}
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between sm:block gap-2">
+                          <h2 className="text-lg sm:text-2xl font-bold text-gray-800 line-clamp-1">
+                            {appointment.reason}
+                          </h2>
 
-                        <div className="flex items-center gap-2 mt-2">
-                          <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-xs font-medium">
+                          {/* Mobile-only status pill (shows top right on small screens) */}
+                          <div className="sm:hidden shrink-0">
+                            <span
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border shadow-sm ${
+                                statusConfig[appointment.status]?.className ||
+                                "bg-gray-100 text-gray-700 border-gray-200"
+                              }`}
+                            >
+                              <StatusIcon size={12} />
+                              {appointment.status}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2 mt-2">
+                          <span className="px-2.5 py-1 rounded-lg bg-white border border-gray-100 text-gray-500 text-[10px] sm:text-xs font-semibold shadow-sm">
                             #{appointment._id.slice(-6)}
                           </span>
-
-                          <span className="px-3 py-1 rounded-full bg-[#F4E8D6] text-[#8B5E34] text-xs font-semibold">
+                          <span className="px-2.5 py-1 rounded-lg bg-[#F4E8D6] border border-[#E8DCCB] text-[#8B5E34] text-[10px] sm:text-xs font-bold shadow-sm">
                             {appointment.type}
                           </span>
                         </div>
                       </div>
 
-                      {/* Status */}
-                      <div className="flex flex-col items-start sm:items-end">
-                        <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
-                          Appointment Status
+                      {/* Desktop-only Status */}
+                      <div className="hidden sm:flex flex-col items-end shrink-0">
+                        <p className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-400 font-bold mb-1.5">
+                          Status
                         </p>
-
                         <span
-                          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border shadow-sm ${
+                          className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold border shadow-sm ${
                             statusConfig[appointment.status]?.className ||
                             "bg-gray-100 text-gray-700 border-gray-200"
                           }`}
                         >
-                          <StatusIcon size={18} />
+                          <StatusIcon size={16} />
                           {appointment.status}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Body */}
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                      <div className="flex items-center gap-4 bg-gray-50 rounded-2xl p-4">
-                        <div className="bg-blue-100 p-3 rounded-xl">
-                          <Calendar className="text-blue-600" size={22} />
+                  {/* ================= BODY (DETAILS) ================= */}
+                  <div className="p-4 sm:p-6 flex-grow">
+                    {/* Tighter grid for mobile: 2 columns for date/time, full width for service */}
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+                      {/* Date Block */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 bg-gray-50/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-gray-100">
+                        <div className="bg-blue-100/50 p-2 sm:p-3 rounded-lg sm:rounded-xl text-blue-600 w-fit">
+                          <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-
                         <div>
-                          <p className="text-sm text-gray-500">
-                            Appointment Date
+                          <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">
+                            Date
                           </p>
-                          <h3 className="font-semibold text-gray-800">
+                          <h3 className="text-xs sm:text-sm font-bold text-gray-800">
                             {new Date(appointment.date).toLocaleDateString(
                               "en-GB",
                               {
@@ -323,40 +346,46 @@ export default function UserDashboard() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4 bg-gray-50 rounded-2xl p-4">
-                        <div className="bg-purple-100 p-3 rounded-xl">
-                          <Clock className="text-purple-600" size={22} />
+                      {/* Time Block */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 bg-gray-50/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-gray-100">
+                        <div className="bg-purple-100/50 p-2 sm:p-3 rounded-lg sm:rounded-xl text-purple-600 w-fit">
+                          <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-
                         <div>
-                          <p className="text-sm text-gray-500">Time</p>
-                          <h3 className="font-semibold text-gray-800">
+                          <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">
+                            Time
+                          </p>
+                          <h3 className="text-xs sm:text-sm font-bold text-gray-800">
                             {appointment.time}
                           </h3>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4 bg-gray-50 rounded-2xl p-4">
-                        <div className="bg-amber-100 p-3 rounded-xl">
-                          <Settings className="text-amber-600" size={22} />
+                      {/* Service Block (Spans 2 columns on mobile, 1 on desktop) */}
+                      <div className="col-span-2 lg:col-span-1 flex flex-row items-center gap-3 sm:gap-4 bg-gray-50/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-gray-100">
+                        <div className="bg-amber-100/50 p-2 sm:p-3 rounded-lg sm:rounded-xl text-amber-600 shrink-0">
+                          <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-
                         <div>
-                          <p className="text-sm text-gray-500">Service Type</p>
-                          <h3 className="font-semibold text-gray-800">
+                          <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider font-semibold mb-0.5 sm:mb-1">
+                            Service Type
+                          </p>
+                          <h3 className="text-xs sm:text-sm font-bold text-gray-800 line-clamp-1">
                             {appointment.type}
                           </h3>
                         </div>
                       </div>
                     </div>
 
-                    {/* Footer */}
-                    <div className="mt-6 border-t border-[#E8DCCB] pt-5">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    {/* ================= FOOTER ================= */}
+                    <div className="mt-4 sm:mt-6 border-t border-[#E8DCCB]/60 pt-4 sm:pt-5">
+                      <div className="flex items-center justify-between gap-4">
                         {/* Created Date */}
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <span className="font-medium">Created On:</span>
-                          <span className="px-3 py-1 rounded-full bg-[#FAF4ED] border border-[#E8DCCB] text-gray-700 font-semibold">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                          <span className="text-[10px] sm:text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                            Booked On
+                          </span>
+                          <span className="text-[11px] sm:text-sm text-gray-600 font-bold">
                             {new Date(appointment.createdAt).toLocaleDateString(
                               "en-GB",
                             )}
@@ -364,30 +393,39 @@ export default function UserDashboard() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() => handleDelete(appointment._id)}
-                            className="flex items-center justify-center gap-2
-                              px-5 py-2.5
-                              rounded-xl
-                              bg-red-500 hover:bg-red-600
-                              text-white font-semibold
-                              shadow-md hover:shadow-lg
-                              transition-all duration-200
-                              active:scale-95"
-                          >
-                            <FaTrash className="text-base" />
-                            Delete
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => handleDelete(appointment._id)}
+                          className="flex items-center justify-center gap-1.5 sm:gap-2
+                  px-3 sm:px-5 py-2 sm:py-2.5
+                  rounded-lg sm:rounded-xl
+                  bg-red-50 text-red-600 hover:bg-red-500 hover:text-white 
+                  font-bold text-xs sm:text-sm
+                  transition-all duration-200
+                  active:scale-95 group/btn"
+                        >
+                          <FaTrash className="text-xs sm:text-base group-hover/btn:animate-bounce" />
+                          <span className="hidden sm:inline">
+                            Cancel Booking
+                          </span>
+                          <span className="sm:hidden">Cancel</span>
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-center py-10 text-gray-500">
-                No appointments found.
+              <div className="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-3xl border border-gray-100 border-dashed text-center">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                  <Calendar className="text-gray-300 w-8 h-8" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-1">
+                  No Appointments
+                </h3>
+                <p className="text-sm text-gray-500 max-w-sm">
+                  You don't have any upcoming appointments scheduled at the
+                  moment.
+                </p>
               </div>
             )}
           </div>

@@ -238,7 +238,7 @@ export default function Navbar() {
           ) : (
             <>
               <Link
-                to="/dashboard"
+                to="/"
                 onClick={handleNavClick}
                 className="flex items-center gap-3 text-lg text-gray-700 hover:text-blue-600"
               >
